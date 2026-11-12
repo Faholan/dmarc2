@@ -1,0 +1,12 @@
+[package]
+name = "dmarc2"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+bitflags = "2.13.2"
+quick-xml = { version = "0.42.0", features = ["serialize"] }
+serde = { version = "1.0.229", features = ["derive"] }
+
+[features]
+strict = []

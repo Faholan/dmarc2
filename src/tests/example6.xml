@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<feedback>
+  <report_metadata>
+    <org_name>BAZ</org_name>
+    <email>no-reply@bazfoo.com</email>
+    <extra_contact_info>https://foo.bar.com/</extra_contact_info>
+    <report_id>bb0b14e8e1edd8b6fe1376f1c0627cb78399be399b0535407801ef6baf5b7ee7</report_id>
+    <date_range>
+      <begin>1794096000</begin>
+      <end>1794182399</end>
+    </date_range>
+  </report_metadata>
+  <policy_published>
+    <domain>foobar.com</domain>
+    <adkim>r</adkim>
+    <aspf>r</aspf>
+    <p>none</p>
+    <sp>none</sp>
+    <pct>100</pct>
+  </policy_published>
+  <record>
+    <row>
+      <source_ip>127.0.0.1</source_ip>
+      <count>1</count>
+      <policy_evaluated>
+        <disposition>none</disposition>
+        <dkim>pass</dkim>
+        <spf>fail</spf>
+      </policy_evaluated>
+    </row>
+    <identifiers>
+      <header_from>foobar.com</header_from>
+    </identifiers>
+    <auth_results>
+      <dkim>
+        <domain>foobar.com</domain>
+        <selector>foobaz</selector>
+        <result>pass</result>
+        <human_result/>
+      </dkim>
+      <spf>
+        <domain>foobaz.org</domain>
+        <result>pass</result>
+      </spf>
+    </auth_results>
+  </record>
+</feedback>

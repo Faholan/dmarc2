@@ -1,0 +1,40 @@
+<feedback>
+  <report_metadata>
+    <org_name>Sample Reporter</org_name>
+    <email>report_sender@example-reporter.com</email>
+    <report_id>3v98abbp8ya9n3va8yr8oa3ya</report_id>
+    <date_range>
+      <begin>302832000</begin>
+      <end>302918399</end>
+    </date_range>
+  </report_metadata>
+  <policy_published>
+    <domain>example.com</domain>
+    <p>quarantine</p>
+  </policy_published>
+  <record>
+    <row>
+      <source_ip>192.0.2.123</source_ip>
+      <count>123</count>
+      <policy_evaluated>
+        <disposition>none</disposition>
+        <dkim>pass</dkim>
+        <spf>fail</spf>
+      </policy_evaluated>
+    </row>
+    <identifiers>
+      <header_from>example.com</header_from>
+    </identifiers>
+    <auth_results>
+      <dkim>
+        <domain>example.com</domain>
+        <result>pass</result>
+        <selector>abc123</selector>
+      </dkim>
+      <spf>
+        <domain>example.com</domain>
+        <result>fail</result>
+      </spf>
+    </auth_results>
+  </record>
+</feedback>
