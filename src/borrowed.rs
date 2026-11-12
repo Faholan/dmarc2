@@ -6,7 +6,7 @@ use serde::Deserialize;
 
 pub use crate::common::{
     AlignmentMode, AlignmentResult, DKIMResult, DateRange, DiscoveryMethod, Disposition,
-    FailureReporting, PolicyOverrideReasonType, SPFResult, SPFScope,
+    FailureReporting, FailureReportingParseError, PolicyOverrideReasonType, SPFResult, SPFScope,
 };
 use crate::common::{deserialize_failure_reporting, deserialize_testing};
 use crate::owned;

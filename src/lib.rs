@@ -157,6 +157,8 @@ use core::str::FromStr;
 use quick_xml::de;
 use std::io::BufRead;
 
+pub use de::DeError;
+
 /// Parse a DMARC aggregate report from an XML string.
 ///
 /// This function is zero-copy, allocating only some vectors,
@@ -168,12 +170,12 @@ use std::io::BufRead;
 ///
 /// Returns [`de::DeError`] if the XML is invalid or does not comform
 /// to the DMARC aggregate report as set in RFC 9990.
-pub fn from_str(s: &str) -> Result<borrowed::Report<'_>, de::DeError> {
+pub fn from_str(s: &str) -> Result<borrowed::Report<'_>, DeError> {
     de::from_str(s)
 }
 
 impl<'a> TryFrom<&'a str> for borrowed::Report<'a> {
-    type Error = de::DeError;
+    type Error = DeError;
 
     fn try_from(value: &'a str) -> Result<Self, Self::Error> {
         from_str(value)
@@ -191,12 +193,12 @@ impl<'a> TryFrom<&'a str> for borrowed::Report<'a> {
 ///
 /// Returns [`de::DeError`] if the XML is invalid or does not comform
 /// to the DMARC aggregate report as set in RFC 9990.
-pub fn from_str_owned(s: &str) -> Result<owned::Report, de::DeError> {
+pub fn from_str_owned(s: &str) -> Result<owned::Report, DeError> {
     de::from_str(s)
 }
 
 impl FromStr for owned::Report {
-    type Err = de::DeError;
+    type Err = DeError;
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         from_str_owned(s)
@@ -204,7 +206,7 @@ impl FromStr for owned::Report {
 }
 
 impl TryFrom<&str> for owned::Report {
-    type Error = de::DeError;
+    type Error = DeError;
 
     fn try_from(value: &str) -> Result<Self, Self::Error> {
         from_str_owned(value)
@@ -217,6 +219,6 @@ impl TryFrom<&str> for owned::Report {
 ///
 /// Returns [`de::DeError`] if the XML is invalid or does not comform
 /// to the DMARC aggregate report as set in RFC 9990.
-pub fn from_reader<T: BufRead>(reader: T) -> Result<owned::Report, de::DeError> {
+pub fn from_reader<T: BufRead>(reader: T) -> Result<owned::Report, DeError> {
     de::from_reader(reader)
 }

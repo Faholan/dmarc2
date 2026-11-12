@@ -1,6 +1,7 @@
 //! Common enums and structs between the borrowed and owned variants.
 
 use core::str::FromStr;
+use core::error::Error;
 use core::fmt::{Display, Formatter, Result as FmtResult};
 
 use bitflags::bitflags;
@@ -114,8 +115,25 @@ bitflags! {
     }
 }
 
+/// Error while parsing the `fo` field of a DMARC policy.
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
+pub enum FailureReportingParseError {
+    /// Invalid failure reporting option.
+    InvalidOption(String)
+}
+
+impl Display for FailureReportingParseError {
+    fn fmt(&self, f: &mut Formatter<'_>) -> FmtResult {
+        match self {
+            Self::InvalidOption(s) => write!(f, "invalid failure reporting option {s}")
+        }
+    }
+}
+
+impl Error for FailureReportingParseError {}
+
 impl FromStr for FailureReporting {
-    type Err = String;
+    type Err = FailureReportingParseError;
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         let mut res = Self::ALL;
@@ -128,7 +146,7 @@ impl FromStr for FailureReporting {
                 "s" => res |= Self::SPF,
                 v => {
                     if cfg!(any(test, feature = "strict")) {
-                        return Err(format!("Invalid failure reporting option {v}"));
+                        return Err(FailureReportingParseError::InvalidOption(v.to_owned()));
                     }
                 }
             }
