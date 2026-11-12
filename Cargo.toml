@@ -2,6 +2,11 @@
 name = "dmarc2"
 version = "0.1.0"
 edition = "2024"
+description = "RFC 9990-compliant DMARC aggregate report parser"
+license = "MIT"
+keywords = ["dmarc", "email", "parser", "rfc9990", "xml"]
+categories = ["parser-implementations"]
+repository = "https://github.com/Faholan/dmarc2"
 
 [dependencies]
 bitflags = "2.13.2"

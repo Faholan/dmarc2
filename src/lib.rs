@@ -153,9 +153,9 @@ pub mod owned;
 #[cfg(test)]
 mod tests;
 
+use core::str::FromStr;
 use quick_xml::de;
 use std::io::BufRead;
-use core::str::FromStr;
 
 /// Parse a DMARC aggregate report from an XML string.
 ///

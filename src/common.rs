@@ -1,6 +1,9 @@
 //! Common enums and structs between the borrowed and owned variants.
 
-use bitflags::{bitflags, parser::from_str_strict};
+use core::str::FromStr;
+use core::fmt::{Display, Formatter, Result as FmtResult};
+
+use bitflags::bitflags;
 use serde::{Deserialize, de};
 
 /// UTC time range, expressed as Unix timestamps,
@@ -64,6 +67,15 @@ pub enum DiscoveryMethod {
     TreeWalk,
 }
 
+impl Display for DiscoveryMethod {
+    fn fmt(&self, f: &mut Formatter<'_>) -> FmtResult {
+        match self {
+            Self::PSL => write!(f, "psl"),
+            Self::TreeWalk => write!(f, "treewalk"),
+        }
+    }
+}
+
 /// Message handling preferences for messages failing DMARC validation.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Deserialize)]
 #[serde(rename_all = "lowercase")]
@@ -77,22 +89,68 @@ pub enum Disposition {
     None,
 }
 
+impl Display for Disposition {
+    fn fmt(&self, f: &mut Formatter<'_>) -> FmtResult {
+        match self {
+            Self::Quarantine => write!(f, "quarantine"),
+            Self::Reject => write!(f, "reject"),
+            Self::None => write!(f, "none"),
+        }
+    }
+}
+
 bitflags! {
     /// DMARC failure reporting options.
     #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
     pub struct FailureReporting: u8 {
         /// Generate a failure report if all authentication mechanisms fail.
-        #[bitflags(flag_name = "o")]
         const ALL = 0b0000_0000;
         /// Generate a failure report if any authentication mechanism fails.
-        #[bitflags(flag_name = "i")]
         const ANY = 0b0000_0001;
         /// Generate a failure report if the message had a signature that failed verification.
-        #[bitflags(flag_name = "d")]
         const DKIM = 0b000_00010;
         /// Generate a failure report if the messaged failed SPF evaluation.
-        #[bitflags(flag_name = "s")]
         const SPF = 0b0000_0100;
+    }
+}
+
+impl FromStr for FailureReporting {
+    type Err = String;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        let mut res = Self::ALL;
+
+        for v in s.split(':') {
+            match v {
+                "0" => {}
+                "1" => res |= Self::ANY,
+                "d" => res |= Self::DKIM,
+                "s" => res |= Self::SPF,
+                v => {
+                    if cfg!(any(test, feature = "strict")) {
+                        return Err(format!("Invalid failure reporting option {v}"));
+                    }
+                }
+            }
+        }
+        Ok(res)
+    }
+}
+
+impl Display for FailureReporting {
+    fn fmt(&self, f: &mut Formatter<'_>) -> FmtResult {
+        if Self::contains(self, Self::ANY) {
+            write!(f, "1")?;
+        } else {
+            write!(f, "0")?;
+        }
+        if Self::contains(self, Self::DKIM) {
+            write!(f, ":d")?;
+        }
+        if Self::contains(self, Self::SPF) {
+            write!(f, ":s")?;
+        }
+        Ok(())
     }
 }
 
@@ -105,9 +163,7 @@ where
     let s: Option<&'de str> = Deserialize::deserialize(deserializer)?;
 
     s.map_or(Ok(None), |s| {
-        from_str_strict(&s.replace(':', "|").replace('0', "o").replace('1', "i"))
-            .map(Some)
-            .map_err(de::Error::custom)
+        FromStr::from_str(s).map(Some).map_err(de::Error::custom)
     })
 }
 
@@ -146,6 +202,15 @@ pub enum AlignmentMode {
     Strict,
 }
 
+impl Display for AlignmentMode {
+    fn fmt(&self, f: &mut Formatter<'_>) -> FmtResult {
+        match self {
+            Self::Relaxed => write!(f, "r"),
+            Self::Strict => write!(f, "s"),
+        }
+    }
+}
+
 /// Result of a DMARC alignment test.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Deserialize)]
 #[serde(rename_all = "lowercase")]
@@ -154,6 +219,15 @@ pub enum AlignmentResult {
     Pass,
     /// Authentication failed.
     Fail,
+}
+
+impl Display for AlignmentResult {
+    fn fmt(&self, f: &mut Formatter<'_>) -> FmtResult {
+        match self {
+            Self::Pass => write!(f, "pass"),
+            Self::Fail => write!(f, "fail"),
+        }
+    }
 }
 
 /// Result of DKIM signature verification.
@@ -180,6 +254,20 @@ pub enum DKIMResult {
     PermError,
 }
 
+impl Display for DKIMResult {
+    fn fmt(&self, f: &mut Formatter<'_>) -> FmtResult {
+        match self {
+            Self::None => write!(f, "none"),
+            Self::Pass => write!(f, "pass"),
+            Self::Fail => write!(f, "fail"),
+            Self::Policy => write!(f, "policy"),
+            Self::Neutral => write!(f, "neutral"),
+            Self::TempError => write!(f, "temperror"),
+            Self::PermError => write!(f, "permerror"),
+        }
+    }
+}
+
 /// SPF domain source.
 ///
 /// Defined in [RFC 9990 section 3.1.13](https://www.rfc-editor.org/info/rfc9990/#section-3.1.1.13).
@@ -188,6 +276,14 @@ pub enum DKIMResult {
 pub enum SPFScope {
     /// "MAIL FROM" identity.
     MFrom,
+}
+
+impl Display for SPFScope {
+    fn fmt(&self, f: &mut Formatter<'_>) -> FmtResult {
+        match self {
+            Self::MFrom => write!(f, "mfrom"),
+        }
+    }
 }
 
 /// Result of SPF authentication.
@@ -229,6 +325,21 @@ pub enum SPFResult {
     PermError,
 }
 
+impl Display for SPFResult {
+    fn fmt(&self, f: &mut Formatter<'_>) -> FmtResult {
+        match self {
+            Self::None => write!(f, "none"),
+            Self::Pass => write!(f, "pass"),
+            Self::Fail => write!(f, "fail"),
+            Self::SoftFail => write!(f, "softfail"),
+            Self::Policy => write!(f, "policy"),
+            Self::Neutral => write!(f, "neutral"),
+            Self::TempError => write!(f, "temperror"),
+            Self::PermError => write!(f, "permerror"),
+        }
+    }
+}
+
 /// Reason for changing the stated DMARC policy.
 ///
 /// Defined in [RFC 9990 section 3.1.6](https://www.rfc-editor.org/info/rfc9990/#section-3.1.6).
@@ -245,6 +356,18 @@ pub enum PolicyOverrideReasonType {
     PolicyTestMode,
     /// Message was from a trusted forwarder.
     TrustedForwarder,
+}
+
+impl Display for PolicyOverrideReasonType {
+    fn fmt(&self, f: &mut Formatter<'_>) -> FmtResult {
+        match self {
+            Self::LocalPolicy => write!(f, "local_policy"),
+            Self::MailingList => write!(f, "mailing_list"),
+            Self::Other => write!(f, "other"),
+            Self::PolicyTestMode => write!(f, "policy_test_mode"),
+            Self::TrustedForwarder => write!(f, "trusted_forwarder"),
+        }
+    }
 }
 
 // Trait implementations
