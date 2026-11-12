@@ -23,7 +23,7 @@ jobs:
           tool: rust+rustfmt
       - run: cargo fmt --all --check
 
-  fmt:
+  clippy:
     name: Clippy
     runs-on: ubuntu-latest
     steps:
