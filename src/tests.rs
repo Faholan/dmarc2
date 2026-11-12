@@ -5,15 +5,15 @@
 )]
 use core::net::{IpAddr, Ipv4Addr};
 
-use crate::{from_str, from_str_owned, owned};
+use crate::{parse, parse_owned, owned};
 use quick_xml::de::DeError;
 
 const RFC_SAMPLE: &str = include_str!("tests/rfc.xml");
 
 #[test]
 fn rfc_sample() -> Result<(), DeError> {
-    let report = from_str(RFC_SAMPLE)?;
-    let report_owned = from_str_owned(RFC_SAMPLE)?;
+    let report = parse(RFC_SAMPLE)?;
+    let report_owned = parse_owned(RFC_SAMPLE)?;
     assert_eq!(report, report_owned);
 
     let report_borrowed_owned: owned::Report = From::from(&report);
@@ -91,8 +91,8 @@ const XML_MINIMAL: &str = include_str!("tests/minimal.xml");
 
 #[test]
 fn minimal_xml() -> Result<(), DeError> {
-    let report = from_str(XML_MINIMAL)?;
-    let report_owned = from_str_owned(XML_MINIMAL)?;
+    let report = parse(XML_MINIMAL)?;
+    let report_owned = parse_owned(XML_MINIMAL)?;
     assert_eq!(report, report_owned);
 
     let report_borrowed_owned: owned::Report = From::from(&report);
@@ -103,8 +103,8 @@ fn minimal_xml() -> Result<(), DeError> {
 
 /// Simply check that parsing doesn't fail.
 fn minimum_example(s: &str) -> Result<(), DeError> {
-    let report = from_str(s)?;
-    let report_owned = from_str_owned(s)?;
+    let report = parse(s)?;
+    let report_owned = parse_owned(s)?;
     assert_eq!(report, report_owned);
 
     let report_borrowed_owned: owned::Report = From::from(&report);

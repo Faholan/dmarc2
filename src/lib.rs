@@ -164,13 +164,13 @@ pub use de::DeError;
 /// This function is zero-copy, allocating only some vectors,
 /// and borrows as much from the input as possible.
 /// If you would prefer an owned version, please see
-/// [`from_str_owned`].
+/// [`parse_owned`].
 ///
 /// # Errors
 ///
 /// Returns [`de::DeError`] if the XML is invalid or does not comform
 /// to the DMARC aggregate report as set in RFC 9990.
-pub fn from_str(s: &str) -> Result<borrowed::Report<'_>, DeError> {
+pub fn parse(s: &str) -> Result<borrowed::Report<'_>, DeError> {
     de::from_str(s)
 }
 
@@ -178,7 +178,7 @@ impl<'a> TryFrom<&'a str> for borrowed::Report<'a> {
     type Error = DeError;
 
     fn try_from(value: &'a str) -> Result<Self, Self::Error> {
-        from_str(value)
+        parse(value)
     }
 }
 
@@ -187,13 +187,13 @@ impl<'a> TryFrom<&'a str> for borrowed::Report<'a> {
 /// This function returns an owned report and performs copies from
 /// the input string.
 /// If you would prefer a zero-copy version, please see
-/// [`from_str`].
+/// [`parse`].
 ///
 /// # Errors
 ///
 /// Returns [`de::DeError`] if the XML is invalid or does not comform
 /// to the DMARC aggregate report as set in RFC 9990.
-pub fn from_str_owned(s: &str) -> Result<owned::Report, DeError> {
+pub fn parse_owned(s: &str) -> Result<owned::Report, DeError> {
     de::from_str(s)
 }
 
@@ -201,7 +201,7 @@ impl FromStr for owned::Report {
     type Err = DeError;
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        from_str_owned(s)
+        parse_owned(s)
     }
 }
 
@@ -209,7 +209,7 @@ impl TryFrom<&str> for owned::Report {
     type Error = DeError;
 
     fn try_from(value: &str) -> Result<Self, Self::Error> {
-        from_str_owned(value)
+        parse_owned(value)
     }
 }
 
@@ -219,6 +219,11 @@ impl TryFrom<&str> for owned::Report {
 ///
 /// Returns [`de::DeError`] if the XML is invalid or does not comform
 /// to the DMARC aggregate report as set in RFC 9990.
-pub fn from_reader<T: BufRead>(reader: T) -> Result<owned::Report, DeError> {
+pub fn parse_reader<T: BufRead>(reader: T) -> Result<owned::Report, DeError> {
     de::from_reader(reader)
 }
+
+// Run examples from README.
+#[cfg(doctest)]
+#[doc = include_str!("../README.md")]
+struct TestReadme;
