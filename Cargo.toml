@@ -13,6 +13,3 @@ rust-version = "1.86.0"
 bitflags = "2.13.2"
 quick-xml = { version = "0.42.0", features = ["serialize"] }
 serde = { version = "1.0.229", features = ["derive"] }
-
-[features]
-strict = []

@@ -16,7 +16,6 @@ use crate::owned;
 /// Defined as the root XML element in [RFC 9990 section 3.1.1.1](https://www.rfc-editor.org/info/rfc9990/#section-3.1.1.1) (`<feedback>`).
 #[derive(Debug, Clone, PartialEq, Eq, Deserialize)]
 #[serde(rename = "feedback")]
-#[cfg_attr(any(test, feature = "strict"), serde(deny_unknown_fields))]
 pub struct Report<'a> {
     /// Report format version (optional).
     pub version: Option<&'a str>,
@@ -32,36 +31,12 @@ pub struct Report<'a> {
     /// Record(s) of the feedback from the report generator.
     #[serde(borrow, rename = "record")]
     pub records: Vec<Record<'a>>,
-
-    // Extra fields that should be discarded
-    #[cfg(any(test, feature = "strict"))]
-    #[serde(default, rename = "extension")]
-    _junk1: (),
-    #[cfg(any(test, feature = "strict"))]
-    #[serde(default, rename = "@xmlns")]
-    _junk2: (),
-    #[cfg(any(test, feature = "strict"))]
-    #[serde(default, rename = "@xmlns:tns")]
-    _junk3: (),
-    #[cfg(any(test, feature = "strict"))]
-    #[serde(default, rename = "@xmlns:xs")]
-    _junk4: (),
-    #[cfg(any(test, feature = "strict"))]
-    #[serde(default, rename = "@xmlns:xsd")]
-    _junk5: (),
-    #[cfg(any(test, feature = "strict"))]
-    #[serde(default, rename = "@xmlns:xsi")]
-    _junk6: (),
-    #[cfg(any(test, feature = "strict"))]
-    #[serde(default, rename = "@xmlns:ext")]
-    _junk7: (),
 }
 
 /// Report generator metadata.
 ///
 /// Defined in [RFC 9990 section 3.1.1.3](https://www.rfc-editor.org/info/rfc9990/#section-3.1.1.3).
 #[derive(Debug, Clone, PartialEq, Eq, Deserialize)]
-#[cfg_attr(any(test, feature = "strict"), serde(deny_unknown_fields))]
 pub struct ReportMetadata<'a> {
     /// Name of the Reporting Organization.
     pub org_name: &'a str,
@@ -90,7 +65,6 @@ pub struct ReportMetadata<'a> {
 ///
 /// Defined in [RFC 9990 section 3.1.1.5](https://www.rfc-editor.org/info/rfc9990/#section-3.1.1.5).
 #[derive(Debug, Clone, PartialEq, Eq, Deserialize)]
-#[cfg_attr(any(test, feature = "strict"), serde(deny_unknown_fields))]
 pub struct PolicyPublished<'a> {
     /// DMARC policy domain.
     pub domain: &'a str,
@@ -129,7 +103,6 @@ pub struct PolicyPublished<'a> {
 ///
 /// Defined in [RFC 9990 section 3.1.1.7](https://www.rfc-editor.org/info/rfc9990/#section-3.1.1.7).
 #[derive(Debug, Clone, PartialEq, Eq, Deserialize)]
-#[cfg_attr(any(test, feature = "strict"), serde(deny_unknown_fields))]
 pub struct Record<'a> {
     /// Status of the system for the given set of messages.
     #[serde(borrow)]
@@ -148,7 +121,6 @@ pub struct Record<'a> {
 ///
 /// Defined in [RFC 9990 section 3.1.1.8](https://www.rfc-editor.org/info/rfc9990/#section-3.1.1.8).
 #[derive(Debug, Clone, PartialEq, Eq, Deserialize)]
-#[cfg_attr(any(test, feature = "strict"), serde(deny_unknown_fields))]
 pub struct Row<'a> {
     /// Connecting IP address of the mail server.
     pub source_ip: IpAddr,
@@ -165,7 +137,6 @@ pub struct Row<'a> {
 ///
 /// Defined in [RFC 9990 section 3.1.1.9](https://www.rfc-editor.org/info/rfc9990/#section-3.1.1.9).
 #[derive(Debug, Clone, PartialEq, Eq, Deserialize)]
-#[cfg_attr(any(test, feature = "strict"), serde(deny_unknown_fields))]
 pub struct PolicyEvaluated<'a> {
     /// Result of applying the DMARC policy.
     pub disposition: Disposition,
@@ -185,7 +156,6 @@ pub struct PolicyEvaluated<'a> {
 ///
 /// Defined in [RFC 9990 section 3.1.10](https://www.rfc-editor.org/info/rfc9990/#section-3.1.1.10).
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Deserialize)]
-#[cfg_attr(any(test, feature = "strict"), serde(deny_unknown_fields))]
 pub struct Identifiers<'a> {
     /// Message `From` domain, as defined in [RFC 5322](https://www.rfc-editor.org/info/rfc5322/).
     pub header_from: &'a str,
@@ -201,7 +171,6 @@ pub struct Identifiers<'a> {
 ///
 /// Defined in [RFC 9990 section 3.1.11](https://www.rfc-editor.org/info/rfc9990/#section-3.1.1.11).
 #[derive(Debug, Clone, PartialEq, Eq, Hash, Deserialize)]
-#[cfg_attr(any(test, feature = "strict"), serde(deny_unknown_fields))]
 pub struct AuthResults<'a> {
     /// DKIM authentication results (zero or more).
     #[serde(default, borrow)]
@@ -216,7 +185,6 @@ pub struct AuthResults<'a> {
 ///
 /// Defined in [RFC 9990 section 3.1.12](https://www.rfc-editor.org/info/rfc9990/#section-3.1.1.12).
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Deserialize)]
-#[cfg_attr(any(test, feature = "strict"), serde(deny_unknown_fields))]
 pub struct DKIMAuthResult<'a> {
     /// Domain used during validation ("d=" tag of the signature).
     pub domain: &'a str,
@@ -237,7 +205,6 @@ pub struct DKIMAuthResult<'a> {
 ///
 /// Defined in [RFC 9990 section 3.1.13](https://www.rfc-editor.org/info/rfc9990/#section-3.1.1.13).
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Deserialize)]
-#[cfg_attr(any(test, feature = "strict"), serde(deny_unknown_fields))]
 pub struct SPFAuthResult<'a> {
     /// Domain used during validation.
     #[serde(default)]
@@ -258,7 +225,6 @@ pub struct SPFAuthResult<'a> {
 ///
 /// Defined in [RFC 9990 section 3.1.14](https://www.rfc-editor.org/info/rfc9990/#section-3.1.1.14).
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Deserialize)]
-#[cfg_attr(any(test, feature = "strict"), serde(deny_unknown_fields))]
 pub struct PolicyOverrideReason<'a> {
     /// Reason for changing the policy.
     #[serde(rename = "type")]
@@ -271,22 +237,22 @@ pub struct PolicyOverrideReason<'a> {
 // Conversion
 impl<'a> From<Report<'a>> for owned::Report {
     fn from(value: Report<'a>) -> Self {
-        Self::new(
-            value.version.map(ToOwned::to_owned),
-            value.report_metadata.into(),
-            value.policy_published.into(),
-            value.records.into_iter().map(From::from).collect(),
-        )
+        Self {
+            version: value.version.map(ToOwned::to_owned),
+            report_metadata: value.report_metadata.into(),
+            policy_published: value.policy_published.into(),
+            records: value.records.into_iter().map(From::from).collect(),
+        }
     }
 }
 impl<'a> From<&Report<'a>> for owned::Report {
     fn from(value: &Report<'a>) -> Self {
-        Self::new(
-            value.version.map(ToOwned::to_owned),
-            From::from(&value.report_metadata),
-            From::from(&value.policy_published),
-            value.records.iter().map(From::from).collect(),
-        )
+        Self {
+            version: value.version.map(ToOwned::to_owned),
+            report_metadata: From::from(&value.report_metadata),
+            policy_published: From::from(&value.policy_published),
+            records: value.records.iter().map(From::from).collect(),
+        }
     }
 }
 

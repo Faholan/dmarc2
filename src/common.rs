@@ -10,7 +10,6 @@ use serde::{Deserialize, de};
 /// UTC time range, expressed as Unix timestamps,
 /// defining the reporting period of the report.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Deserialize)]
-#[cfg_attr(any(test, feature = "strict"), serde(deny_unknown_fields))]
 pub struct DateRange {
     /// Start of the reporting period.
     #[serde(deserialize_with = "deserialize_timestamp")]
@@ -86,7 +85,6 @@ pub enum Disposition {
     /// Reject the mail.
     Reject,
     /// Deliver the mail normally.
-    #[cfg_attr(not(any(test, feature = "strict")), serde(other))]
     None,
 }
 
@@ -144,11 +142,7 @@ impl FromStr for FailureReporting {
                 "1" => res |= Self::ANY,
                 "d" => res |= Self::DKIM,
                 "s" => res |= Self::SPF,
-                v => {
-                    if cfg!(any(test, feature = "strict")) {
-                        return Err(FailureReportingParseError::InvalidOption(v.to_owned()));
-                    }
-                }
+                v => return Err(FailureReportingParseError::InvalidOption(v.to_owned())),
             }
         }
         Ok(res)
@@ -193,15 +187,9 @@ where
     s.map_or(Ok(None), |s| match s {
         "y" => Ok(Some(true)),
         "n" => Ok(Some(false)),
-        _ => {
-            if cfg!(any(test, feature = "strict")) {
-                Err(de::Error::custom(format!(
+        _ => Err(de::Error::custom(format!(
                     "Invalid testing value {s}, expected \"y\" or \"n\""
                 )))
-            } else {
-                Ok(Some(false))
-            }
-        }
     })
 }
 
