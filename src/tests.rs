@@ -5,7 +5,7 @@
 )]
 use core::net::{IpAddr, Ipv4Addr};
 
-use crate::{parse, parse_owned, owned};
+use crate::{borrowed::PolicyOverrideReason, owned, parse, parse_owned};
 use quick_xml::de::DeError;
 
 const RFC_SAMPLE: &str = include_str!("tests/rfc.xml");
@@ -32,7 +32,7 @@ fn rfc_sample() -> Result<(), DeError> {
     );
     assert_eq!(report.report_metadata.date_range.begin, 302_832_000);
     assert_eq!(report.report_metadata.date_range.end, 302_918_399);
-    assert!(report.report_metadata.errors.is_empty());
+    assert_eq!(report.report_metadata.errors, [] as [&str; 0]);
     assert_eq!(
         report.report_metadata.generator,
         Some("Example DMARC Aggregate Reporter v1.2")
@@ -41,10 +41,10 @@ fn rfc_sample() -> Result<(), DeError> {
     assert_eq!(report.policy_published.p, owned::Disposition::Quarantine);
     assert_eq!(report.policy_published.sp, Some(owned::Disposition::None));
     assert_eq!(report.policy_published.np, Some(owned::Disposition::None));
-    assert!(report.policy_published.fo.is_none());
-    assert!(report.policy_published.adkim.is_none());
-    assert!(report.policy_published.aspf.is_none());
-    assert!(report.policy_published.pct.is_none());
+    assert_eq!(report.policy_published.fo, None);
+    assert_eq!(report.policy_published.adkim, None);
+    assert_eq!(report.policy_published.aspf, None);
+    assert_eq!(report.policy_published.pct, None);
     assert_eq!(report.policy_published.testing, Some(false));
     assert_eq!(
         report.policy_published.discovery_method,
@@ -69,21 +69,21 @@ fn rfc_sample() -> Result<(), DeError> {
         record.row.policy_evaluated.spf,
         owned::AlignmentResult::Fail
     );
-    assert!(record.row.policy_evaluated.reason.is_empty());
+    assert_eq!(record.row.policy_evaluated.reason, [] as [PolicyOverrideReason<'_>; 0]);
     assert_eq!(record.identifiers.header_from, "example.com");
     assert_eq!(record.identifiers.envelope_from, Some("example.com"));
-    assert!(record.identifiers.envelope_to.is_none());
+    assert_eq!(record.identifiers.envelope_to, None);
     assert_eq!(record.auth_results.dkim.len(), 1);
     let dkim_result = &record.auth_results.dkim[0];
     assert_eq!(dkim_result.domain, "example.com");
     assert_eq!(dkim_result.result, owned::DKIMResult::Pass);
     assert_eq!(dkim_result.selector, "abc123");
-    assert!(dkim_result.human_result.is_none());
+    assert_eq!(dkim_result.human_result, None);
     let spf_result = &record.auth_results.spf.unwrap();
     assert_eq!(spf_result.domain, "example.com");
     assert_eq!(spf_result.result, owned::SPFResult::Fail);
-    assert!(spf_result.scope.is_none());
-    assert!(spf_result.human_result.is_none());
+    assert_eq!(spf_result.scope, None);
+    assert_eq!(spf_result.human_result, None);
     Ok(())
 }
 
