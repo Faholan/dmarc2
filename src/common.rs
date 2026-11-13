@@ -1,8 +1,8 @@
 //! Common enums and structs between the borrowed and owned variants.
 
-use core::str::FromStr;
 use core::error::Error;
 use core::fmt::{Display, Formatter, Result as FmtResult};
+use core::str::FromStr;
 
 use bitflags::bitflags;
 use serde::{Deserialize, de};
@@ -117,13 +117,13 @@ bitflags! {
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub enum FailureReportingParseError {
     /// Invalid failure reporting option.
-    InvalidOption(String)
+    InvalidOption(String),
 }
 
 impl Display for FailureReportingParseError {
     fn fmt(&self, f: &mut Formatter<'_>) -> FmtResult {
         match self {
-            Self::InvalidOption(s) => write!(f, "invalid failure reporting option {s}")
+            Self::InvalidOption(s) => write!(f, "invalid failure reporting option {s}"),
         }
     }
 }
@@ -188,8 +188,8 @@ where
         "y" => Ok(Some(true)),
         "n" => Ok(Some(false)),
         _ => Err(de::Error::custom(format!(
-                    "Invalid testing value {s}, expected \"y\" or \"n\""
-                )))
+            "Invalid testing value {s}, expected \"y\" or \"n\""
+        ))),
     })
 }
 

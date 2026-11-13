@@ -69,7 +69,10 @@ fn rfc_sample() -> Result<(), DeError> {
         record.row.policy_evaluated.spf,
         owned::AlignmentResult::Fail
     );
-    assert_eq!(record.row.policy_evaluated.reason, [] as [PolicyOverrideReason<'_>; 0]);
+    assert_eq!(
+        record.row.policy_evaluated.reason,
+        [] as [PolicyOverrideReason<'_>; 0]
+    );
     assert_eq!(record.identifiers.header_from, "example.com");
     assert_eq!(record.identifiers.envelope_from, Some("example.com"));
     assert_eq!(record.identifiers.envelope_to, None);
