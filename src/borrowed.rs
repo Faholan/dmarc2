@@ -190,8 +190,10 @@ pub struct DKIMAuthResult<'a> {
     pub domain: &'a str,
 
     /// Selector used during validation ("s=" tag of the signature).
+    ///
+    /// Some DMARC implementations forego the selector even though it is
+    /// required by the RFC: it is then left empty.
     #[serde(default)]
-    // Some DMARC implementations forego the selector even though it is required by the RFC.
     pub selector: &'a str,
 
     /// Result of the DKIM verification.
@@ -207,8 +209,10 @@ pub struct DKIMAuthResult<'a> {
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Deserialize)]
 pub struct SPFAuthResult<'a> {
     /// Domain used during validation.
+    ///
+    /// Some DMARC implementations forego the domain even though it is
+    /// required by the RFC: it is then left empty.
     #[serde(default)]
-    // Some DMARC implementations forego the domain even though it is required by the RFC.
     pub domain: &'a str,
 
     /// Source of the domain used during validation.
@@ -234,8 +238,12 @@ pub struct PolicyOverrideReason<'a> {
     pub comment: Option<&'a str>,
 }
 
-// Conversion
+// Conversion from borrowed to owned variants.
+/// Convert a borrowed [`Report`] into an owned [`owned::Report`].
+///
+/// Borrowed strings are copied into newly allocated [`String`]s.
 impl<'a> From<Report<'a>> for owned::Report {
+    /// Consume the borrowed value and build its owned counterpart.
     fn from(value: Report<'a>) -> Self {
         Self {
             version: value.version.map(ToOwned::to_owned),
@@ -245,7 +253,11 @@ impl<'a> From<Report<'a>> for owned::Report {
         }
     }
 }
+/// Convert a reference to a borrowed [`Report`] into an owned [`owned::Report`].
+///
+/// The borrowed value is left untouched, and its strings are copied.
 impl<'a> From<&Report<'a>> for owned::Report {
+    /// Build an owned copy of the referenced borrowed value.
     fn from(value: &Report<'a>) -> Self {
         Self {
             version: value.version.map(ToOwned::to_owned),
@@ -256,7 +268,11 @@ impl<'a> From<&Report<'a>> for owned::Report {
     }
 }
 
+/// Convert a borrowed [`ReportMetadata`] into an owned [`owned::ReportMetadata`].
+///
+/// Borrowed strings are copied into newly allocated [`String`]s.
 impl<'a> From<ReportMetadata<'a>> for owned::ReportMetadata {
+    /// Consume the borrowed value and build its owned counterpart.
     fn from(value: ReportMetadata<'a>) -> Self {
         Self {
             org_name: value.org_name.to_owned(),
@@ -270,7 +286,11 @@ impl<'a> From<ReportMetadata<'a>> for owned::ReportMetadata {
     }
 }
 
+/// Convert a reference to a borrowed [`ReportMetadata`] into an owned [`owned::ReportMetadata`].
+///
+/// The borrowed value is left untouched, and its strings are copied.
 impl<'a> From<&ReportMetadata<'a>> for owned::ReportMetadata {
+    /// Build an owned copy of the referenced borrowed value.
     fn from(value: &ReportMetadata<'a>) -> Self {
         Self {
             org_name: value.org_name.to_owned(),
@@ -284,7 +304,11 @@ impl<'a> From<&ReportMetadata<'a>> for owned::ReportMetadata {
     }
 }
 
+/// Convert a borrowed [`PolicyPublished`] into an owned [`owned::PolicyPublished`].
+///
+/// Borrowed strings are copied into newly allocated [`String`]s.
 impl<'a> From<PolicyPublished<'a>> for owned::PolicyPublished {
+    /// Consume the borrowed value and build its owned counterpart.
     fn from(value: PolicyPublished<'a>) -> Self {
         Self {
             domain: value.domain.to_owned(),
@@ -301,7 +325,11 @@ impl<'a> From<PolicyPublished<'a>> for owned::PolicyPublished {
     }
 }
 
+/// Convert a reference to a borrowed [`PolicyPublished`] into an owned [`owned::PolicyPublished`].
+///
+/// The borrowed value is left untouched, and its strings are copied.
 impl<'a> From<&PolicyPublished<'a>> for owned::PolicyPublished {
+    /// Build an owned copy of the referenced borrowed value.
     fn from(value: &PolicyPublished<'a>) -> Self {
         Self {
             domain: value.domain.to_owned(),
@@ -318,7 +346,11 @@ impl<'a> From<&PolicyPublished<'a>> for owned::PolicyPublished {
     }
 }
 
+/// Convert a borrowed [`Record`] into an owned [`owned::Record`].
+///
+/// Borrowed strings are copied into newly allocated [`String`]s.
 impl<'a> From<Record<'a>> for owned::Record {
+    /// Consume the borrowed value and build its owned counterpart.
     fn from(value: Record<'a>) -> Self {
         Self {
             row: value.row.into(),
@@ -328,7 +360,11 @@ impl<'a> From<Record<'a>> for owned::Record {
     }
 }
 
+/// Convert a reference to a borrowed [`Record`] into an owned [`owned::Record`].
+///
+/// The borrowed value is left untouched, and its strings are copied.
 impl<'a> From<&Record<'a>> for owned::Record {
+    /// Build an owned copy of the referenced borrowed value.
     fn from(value: &Record<'a>) -> Self {
         Self {
             row: From::from(&value.row),
@@ -338,7 +374,11 @@ impl<'a> From<&Record<'a>> for owned::Record {
     }
 }
 
+/// Convert a borrowed [`Row`] into an owned [`owned::Row`].
+///
+/// Borrowed strings are copied into newly allocated [`String`]s.
 impl<'a> From<Row<'a>> for owned::Row {
+    /// Consume the borrowed value and build its owned counterpart.
     fn from(value: Row<'a>) -> Self {
         Self {
             source_ip: value.source_ip,
@@ -348,7 +388,11 @@ impl<'a> From<Row<'a>> for owned::Row {
     }
 }
 
+/// Convert a reference to a borrowed [`Row`] into an owned [`owned::Row`].
+///
+/// The borrowed value is left untouched, and its strings are copied.
 impl<'a> From<&Row<'a>> for owned::Row {
+    /// Build an owned copy of the referenced borrowed value.
     fn from(value: &Row<'a>) -> Self {
         Self {
             source_ip: value.source_ip,
@@ -358,7 +402,11 @@ impl<'a> From<&Row<'a>> for owned::Row {
     }
 }
 
+/// Convert a borrowed [`PolicyEvaluated`] into an owned [`owned::PolicyEvaluated`].
+///
+/// Borrowed strings are copied into newly allocated [`String`]s.
 impl<'a> From<PolicyEvaluated<'a>> for owned::PolicyEvaluated {
+    /// Consume the borrowed value and build its owned counterpart.
     fn from(value: PolicyEvaluated<'a>) -> Self {
         Self {
             disposition: value.disposition,
@@ -369,7 +417,11 @@ impl<'a> From<PolicyEvaluated<'a>> for owned::PolicyEvaluated {
     }
 }
 
+/// Convert a reference to a borrowed [`PolicyEvaluated`] into an owned [`owned::PolicyEvaluated`].
+///
+/// The borrowed value is left untouched, and its strings are copied.
 impl<'a> From<&PolicyEvaluated<'a>> for owned::PolicyEvaluated {
+    /// Build an owned copy of the referenced borrowed value.
     fn from(value: &PolicyEvaluated<'a>) -> Self {
         Self {
             disposition: value.disposition,
@@ -380,7 +432,11 @@ impl<'a> From<&PolicyEvaluated<'a>> for owned::PolicyEvaluated {
     }
 }
 
+/// Convert a borrowed [`Identifiers`] into an owned [`owned::Identifiers`].
+///
+/// Borrowed strings are copied into newly allocated [`String`]s.
 impl<'a> From<Identifiers<'a>> for owned::Identifiers {
+    /// Consume the borrowed value and build its owned counterpart.
     fn from(value: Identifiers<'a>) -> Self {
         Self {
             header_from: value.header_from.to_owned(),
@@ -390,13 +446,21 @@ impl<'a> From<Identifiers<'a>> for owned::Identifiers {
     }
 }
 
+/// Convert a reference to a borrowed [`Identifiers`] into an owned [`owned::Identifiers`].
+///
+/// The borrowed value is left untouched, and its strings are copied.
 impl<'a> From<&Identifiers<'a>> for owned::Identifiers {
+    /// Build an owned copy of the referenced borrowed value.
     fn from(value: &Identifiers<'a>) -> Self {
         From::from(*value)
     }
 }
 
+/// Convert a borrowed [`AuthResults`] into an owned [`owned::AuthResults`].
+///
+/// Borrowed strings are copied into newly allocated [`String`]s.
 impl<'a> From<AuthResults<'a>> for owned::AuthResults {
+    /// Consume the borrowed value and build its owned counterpart.
     fn from(value: AuthResults<'a>) -> Self {
         Self {
             dkim: value.dkim.into_iter().map(From::from).collect(),
@@ -405,7 +469,11 @@ impl<'a> From<AuthResults<'a>> for owned::AuthResults {
     }
 }
 
+/// Convert a reference to a borrowed [`AuthResults`] into an owned [`owned::AuthResults`].
+///
+/// The borrowed value is left untouched, and its strings are copied.
 impl<'a> From<&AuthResults<'a>> for owned::AuthResults {
+    /// Build an owned copy of the referenced borrowed value.
     fn from(value: &AuthResults<'a>) -> Self {
         Self {
             dkim: value.dkim.iter().map(From::from).collect(),
@@ -414,7 +482,11 @@ impl<'a> From<&AuthResults<'a>> for owned::AuthResults {
     }
 }
 
+/// Convert a borrowed [`DKIMAuthResult`] into an owned [`owned::DKIMAuthResult`].
+///
+/// Borrowed strings are copied into newly allocated [`String`]s.
 impl<'a> From<DKIMAuthResult<'a>> for owned::DKIMAuthResult {
+    /// Consume the borrowed value and build its owned counterpart.
     fn from(value: DKIMAuthResult<'a>) -> Self {
         Self {
             domain: value.domain.to_owned(),
@@ -425,13 +497,21 @@ impl<'a> From<DKIMAuthResult<'a>> for owned::DKIMAuthResult {
     }
 }
 
+/// Convert a reference to a borrowed [`DKIMAuthResult`] into an owned [`owned::DKIMAuthResult`].
+///
+/// The borrowed value is left untouched, and its strings are copied.
 impl<'a> From<&DKIMAuthResult<'a>> for owned::DKIMAuthResult {
+    /// Build an owned copy of the referenced borrowed value.
     fn from(value: &DKIMAuthResult<'a>) -> Self {
         From::from(*value)
     }
 }
 
+/// Convert a borrowed [`SPFAuthResult`] into an owned [`owned::SPFAuthResult`].
+///
+/// Borrowed strings are copied into newly allocated [`String`]s.
 impl<'a> From<SPFAuthResult<'a>> for owned::SPFAuthResult {
+    /// Consume the borrowed value and build its owned counterpart.
     fn from(value: SPFAuthResult<'a>) -> Self {
         Self {
             domain: value.domain.to_owned(),
@@ -442,13 +522,21 @@ impl<'a> From<SPFAuthResult<'a>> for owned::SPFAuthResult {
     }
 }
 
+/// Convert a reference to a borrowed [`SPFAuthResult`] into an owned [`owned::SPFAuthResult`].
+///
+/// The borrowed value is left untouched, and its strings are copied.
 impl<'a> From<&SPFAuthResult<'a>> for owned::SPFAuthResult {
+    /// Build an owned copy of the referenced borrowed value.
     fn from(value: &SPFAuthResult<'a>) -> Self {
         From::from(*value)
     }
 }
 
+/// Convert a borrowed [`PolicyOverrideReason`] into an owned [`owned::PolicyOverrideReason`].
+///
+/// Borrowed strings are copied into newly allocated [`String`]s.
 impl<'a> From<PolicyOverrideReason<'a>> for owned::PolicyOverrideReason {
+    /// Consume the borrowed value and build its owned counterpart.
     fn from(value: PolicyOverrideReason<'a>) -> Self {
         Self {
             reason_type: value.reason_type,
@@ -457,14 +545,22 @@ impl<'a> From<PolicyOverrideReason<'a>> for owned::PolicyOverrideReason {
     }
 }
 
+/// Convert a reference to a borrowed [`PolicyOverrideReason`] into an owned [`owned::PolicyOverrideReason`].
+///
+/// The borrowed value is left untouched, and its strings are copied.
 impl<'a> From<&PolicyOverrideReason<'a>> for owned::PolicyOverrideReason {
+    /// Build an owned copy of the referenced borrowed value.
     fn from(value: &PolicyOverrideReason<'a>) -> Self {
         From::from(*value)
     }
 }
 
-// Comparison.
+// Comparison between borrowed and owned variants.
+/// Compare an owned [`owned::Report`] with a borrowed [`Report`].
+///
+/// Both are equal if all their fields hold the same values.
 impl<'a> PartialEq<Report<'a>> for owned::Report {
+    /// Return `true` if all fields of both values are equal.
     fn eq(&self, other: &Report<'a>) -> bool {
         self.version.as_deref() == other.version
             && self.report_metadata == other.report_metadata
@@ -473,13 +569,23 @@ impl<'a> PartialEq<Report<'a>> for owned::Report {
     }
 }
 
+/// Compare a borrowed [`Report`] with an owned [`owned::Report`].
+///
+/// This is the symmetric counterpart of the `owned` to `borrowed` comparison.
 impl PartialEq<owned::Report> for Report<'_> {
+    /// Return `true` if all fields of both values are equal.
+    ///
+    /// Delegates to the `owned` to `borrowed` comparison.
     fn eq(&self, other: &owned::Report) -> bool {
         other == self
     }
 }
 
+/// Compare an owned [`owned::ReportMetadata`] with a borrowed [`ReportMetadata`].
+///
+/// Both are equal if all their fields hold the same values.
 impl<'a> PartialEq<ReportMetadata<'a>> for owned::ReportMetadata {
+    /// Return `true` if all fields of both values are equal.
     fn eq(&self, other: &ReportMetadata<'a>) -> bool {
         self.org_name == other.org_name
             && self.email == other.email
@@ -491,13 +597,23 @@ impl<'a> PartialEq<ReportMetadata<'a>> for owned::ReportMetadata {
     }
 }
 
+/// Compare a borrowed [`ReportMetadata`] with an owned [`owned::ReportMetadata`].
+///
+/// This is the symmetric counterpart of the `owned` to `borrowed` comparison.
 impl PartialEq<owned::ReportMetadata> for ReportMetadata<'_> {
+    /// Return `true` if all fields of both values are equal.
+    ///
+    /// Delegates to the `owned` to `borrowed` comparison.
     fn eq(&self, other: &owned::ReportMetadata) -> bool {
         other == self
     }
 }
 
+/// Compare an owned [`owned::PolicyPublished`] with a borrowed [`PolicyPublished`].
+///
+/// Both are equal if all their fields hold the same values.
 impl<'a> PartialEq<PolicyPublished<'a>> for owned::PolicyPublished {
+    /// Return `true` if all fields of both values are equal.
     fn eq(&self, other: &PolicyPublished<'a>) -> bool {
         self.domain == other.domain
             && self.discovery_method == other.discovery_method
@@ -511,13 +627,23 @@ impl<'a> PartialEq<PolicyPublished<'a>> for owned::PolicyPublished {
     }
 }
 
+/// Compare a borrowed [`PolicyPublished`] with an owned [`owned::PolicyPublished`].
+///
+/// This is the symmetric counterpart of the `owned` to `borrowed` comparison.
 impl PartialEq<owned::PolicyPublished> for PolicyPublished<'_> {
+    /// Return `true` if all fields of both values are equal.
+    ///
+    /// Delegates to the `owned` to `borrowed` comparison.
     fn eq(&self, other: &owned::PolicyPublished) -> bool {
         other == self
     }
 }
 
+/// Compare an owned [`owned::Record`] with a borrowed [`Record`].
+///
+/// Both are equal if all their fields hold the same values.
 impl<'a> PartialEq<Record<'a>> for owned::Record {
+    /// Return `true` if all fields of both values are equal.
     fn eq(&self, other: &Record<'a>) -> bool {
         self.row == other.row
             && self.identifiers == other.identifiers
@@ -525,13 +651,23 @@ impl<'a> PartialEq<Record<'a>> for owned::Record {
     }
 }
 
+/// Compare a borrowed [`Record`] with an owned [`owned::Record`].
+///
+/// This is the symmetric counterpart of the `owned` to `borrowed` comparison.
 impl PartialEq<owned::Record> for Record<'_> {
+    /// Return `true` if all fields of both values are equal.
+    ///
+    /// Delegates to the `owned` to `borrowed` comparison.
     fn eq(&self, other: &owned::Record) -> bool {
         other == self
     }
 }
 
+/// Compare an owned [`owned::Row`] with a borrowed [`Row`].
+///
+/// Both are equal if all their fields hold the same values.
 impl<'a> PartialEq<Row<'a>> for owned::Row {
+    /// Return `true` if all fields of both values are equal.
     fn eq(&self, other: &Row<'a>) -> bool {
         self.source_ip == other.source_ip
             && self.count == other.count
@@ -539,13 +675,23 @@ impl<'a> PartialEq<Row<'a>> for owned::Row {
     }
 }
 
+/// Compare a borrowed [`Row`] with an owned [`owned::Row`].
+///
+/// This is the symmetric counterpart of the `owned` to `borrowed` comparison.
 impl PartialEq<owned::Row> for Row<'_> {
+    /// Return `true` if all fields of both values are equal.
+    ///
+    /// Delegates to the `owned` to `borrowed` comparison.
     fn eq(&self, other: &owned::Row) -> bool {
         other == self
     }
 }
 
+/// Compare an owned [`owned::PolicyEvaluated`] with a borrowed [`PolicyEvaluated`].
+///
+/// Both are equal if all their fields hold the same values.
 impl<'a> PartialEq<PolicyEvaluated<'a>> for owned::PolicyEvaluated {
+    /// Return `true` if all fields of both values are equal.
     fn eq(&self, other: &PolicyEvaluated<'a>) -> bool {
         self.disposition == other.disposition
             && self.dkim == other.dkim
@@ -554,13 +700,23 @@ impl<'a> PartialEq<PolicyEvaluated<'a>> for owned::PolicyEvaluated {
     }
 }
 
+/// Compare a borrowed [`PolicyEvaluated`] with an owned [`owned::PolicyEvaluated`].
+///
+/// This is the symmetric counterpart of the `owned` to `borrowed` comparison.
 impl PartialEq<owned::PolicyEvaluated> for PolicyEvaluated<'_> {
+    /// Return `true` if all fields of both values are equal.
+    ///
+    /// Delegates to the `owned` to `borrowed` comparison.
     fn eq(&self, other: &owned::PolicyEvaluated) -> bool {
         other == self
     }
 }
 
+/// Compare an owned [`owned::Identifiers`] with a borrowed [`Identifiers`].
+///
+/// Both are equal if all their fields hold the same values.
 impl<'a> PartialEq<Identifiers<'a>> for owned::Identifiers {
+    /// Return `true` if all fields of both values are equal.
     fn eq(&self, other: &Identifiers<'a>) -> bool {
         self.header_from == other.header_from
             && self.envelope_from.as_deref() == other.envelope_from
@@ -568,13 +724,23 @@ impl<'a> PartialEq<Identifiers<'a>> for owned::Identifiers {
     }
 }
 
+/// Compare a borrowed [`Identifiers`] with an owned [`owned::Identifiers`].
+///
+/// This is the symmetric counterpart of the `owned` to `borrowed` comparison.
 impl PartialEq<owned::Identifiers> for Identifiers<'_> {
+    /// Return `true` if all fields of both values are equal.
+    ///
+    /// Delegates to the `owned` to `borrowed` comparison.
     fn eq(&self, other: &owned::Identifiers) -> bool {
         other == self
     }
 }
 
+/// Compare an owned [`owned::AuthResults`] with a borrowed [`AuthResults`].
+///
+/// Both are equal if all their fields hold the same values.
 impl<'a> PartialEq<AuthResults<'a>> for owned::AuthResults {
+    /// Return `true` if all fields of both values are equal.
     fn eq(&self, other: &AuthResults<'a>) -> bool {
         self.dkim == other.dkim
             && match (&self.spf, &other.spf) {
@@ -585,13 +751,23 @@ impl<'a> PartialEq<AuthResults<'a>> for owned::AuthResults {
     }
 }
 
+/// Compare a borrowed [`AuthResults`] with an owned [`owned::AuthResults`].
+///
+/// This is the symmetric counterpart of the `owned` to `borrowed` comparison.
 impl PartialEq<owned::AuthResults> for AuthResults<'_> {
+    /// Return `true` if all fields of both values are equal.
+    ///
+    /// Delegates to the `owned` to `borrowed` comparison.
     fn eq(&self, other: &owned::AuthResults) -> bool {
         other == self
     }
 }
 
+/// Compare an owned [`owned::DKIMAuthResult`] with a borrowed [`DKIMAuthResult`].
+///
+/// Both are equal if all their fields hold the same values.
 impl<'a> PartialEq<DKIMAuthResult<'a>> for owned::DKIMAuthResult {
+    /// Return `true` if all fields of both values are equal.
     fn eq(&self, other: &DKIMAuthResult<'a>) -> bool {
         self.domain == other.domain
             && self.selector == other.selector
@@ -599,13 +775,23 @@ impl<'a> PartialEq<DKIMAuthResult<'a>> for owned::DKIMAuthResult {
             && self.human_result.as_deref() == other.human_result
     }
 }
+/// Compare a borrowed [`DKIMAuthResult`] with an owned [`owned::DKIMAuthResult`].
+///
+/// This is the symmetric counterpart of the `owned` to `borrowed` comparison.
 impl PartialEq<owned::DKIMAuthResult> for DKIMAuthResult<'_> {
+    /// Return `true` if all fields of both values are equal.
+    ///
+    /// Delegates to the `owned` to `borrowed` comparison.
     fn eq(&self, other: &owned::DKIMAuthResult) -> bool {
         other == self
     }
 }
 
+/// Compare an owned [`owned::SPFAuthResult`] with a borrowed [`SPFAuthResult`].
+///
+/// Both are equal if all their fields hold the same values.
 impl<'a> PartialEq<SPFAuthResult<'a>> for owned::SPFAuthResult {
+    /// Return `true` if all fields of both values are equal.
     fn eq(&self, other: &SPFAuthResult<'a>) -> bool {
         self.domain == other.domain
             && self.scope == other.scope
@@ -614,19 +800,35 @@ impl<'a> PartialEq<SPFAuthResult<'a>> for owned::SPFAuthResult {
     }
 }
 
+/// Compare a borrowed [`SPFAuthResult`] with an owned [`owned::SPFAuthResult`].
+///
+/// This is the symmetric counterpart of the `owned` to `borrowed` comparison.
 impl PartialEq<owned::SPFAuthResult> for SPFAuthResult<'_> {
+    /// Return `true` if all fields of both values are equal.
+    ///
+    /// Delegates to the `owned` to `borrowed` comparison.
     fn eq(&self, other: &owned::SPFAuthResult) -> bool {
         other == self
     }
 }
 
+/// Compare an owned [`owned::PolicyOverrideReason`] with a borrowed [`PolicyOverrideReason`].
+///
+/// Both are equal if all their fields hold the same values.
 impl<'a> PartialEq<PolicyOverrideReason<'a>> for owned::PolicyOverrideReason {
+    /// Return `true` if all fields of both values are equal.
     fn eq(&self, other: &PolicyOverrideReason<'a>) -> bool {
         self.reason_type == other.reason_type && self.comment.as_deref() == other.comment
     }
 }
 
+/// Compare a borrowed [`PolicyOverrideReason`] with an owned [`owned::PolicyOverrideReason`].
+///
+/// This is the symmetric counterpart of the `owned` to `borrowed` comparison.
 impl PartialEq<owned::PolicyOverrideReason> for PolicyOverrideReason<'_> {
+    /// Return `true` if all fields of both values are equal.
+    ///
+    /// Delegates to the `owned` to `borrowed` comparison.
     fn eq(&self, other: &owned::PolicyOverrideReason) -> bool {
         other == self
     }
