@@ -124,10 +124,8 @@ fn minimum_example(s: &str) -> Result<(), DeError> {
     Ok(())
 }
 
-/// Real-world report sample number 1.
 const XML_1: &str = include_str!("tests/example1.xml");
 
-/// Parse real-world report sample number 1.
 #[test]
 fn xml1() -> Result<(), DeError> {
     minimum_example(XML_1)

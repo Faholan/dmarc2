@@ -86,9 +86,7 @@ pub enum DiscoveryMethod {
     TreeWalk,
 }
 
-/// Format the [`DiscoveryMethod`] as its RFC 9990 XML value (`psl` or `treewalk`).
 impl Display for DiscoveryMethod {
-    /// Write the textual representation of the value.
     fn fmt(&self, f: &mut Formatter<'_>) -> FmtResult {
         match self {
             Self::PSL => write!(f, "psl"),
@@ -109,9 +107,7 @@ pub enum Disposition {
     None,
 }
 
-/// Format the [`Disposition`] as its RFC 9990 XML value (`quarantine`, `reject` or `none`).
 impl Display for Disposition {
-    /// Write the textual representation of the value.
     fn fmt(&self, f: &mut Formatter<'_>) -> FmtResult {
         match self {
             Self::Quarantine => write!(f, "quarantine"),
@@ -143,9 +139,7 @@ pub enum FailureReportingParseError {
     InvalidOption(String),
 }
 
-/// Format the error as a human-readable message.
 impl Display for FailureReportingParseError {
-    /// Write a message mentioning the invalid option.
     fn fmt(&self, f: &mut Formatter<'_>) -> FmtResult {
         match self {
             Self::InvalidOption(s) => write!(f, "invalid failure reporting option {s}"),
@@ -186,12 +180,7 @@ impl FromStr for FailureReporting {
     }
 }
 
-/// Format the flags as the value of a DMARC `fo` tag.
-///
-/// The output always starts with `0` or `1`, optionally followed
-/// by `:d` and `:s`, e.g. `1:d:s`.
 impl Display for FailureReporting {
-    /// Write the `fo` tag representation of the flags.
     fn fmt(&self, f: &mut Formatter<'_>) -> FmtResult {
         if Self::contains(self, Self::ANY) {
             write!(f, "1")?;
@@ -266,9 +255,7 @@ pub enum AlignmentMode {
     Strict,
 }
 
-/// Format the [`AlignmentMode`] as its DMARC tag value (`r` or `s`).
 impl Display for AlignmentMode {
-    /// Write the textual representation of the value.
     fn fmt(&self, f: &mut Formatter<'_>) -> FmtResult {
         match self {
             Self::Relaxed => write!(f, "r"),
@@ -287,9 +274,7 @@ pub enum AlignmentResult {
     Fail,
 }
 
-/// Format the [`AlignmentResult`] as its RFC 9990 XML value (`pass` or `fail`).
 impl Display for AlignmentResult {
-    /// Write the textual representation of the value.
     fn fmt(&self, f: &mut Formatter<'_>) -> FmtResult {
         match self {
             Self::Pass => write!(f, "pass"),
@@ -322,9 +307,7 @@ pub enum DKIMResult {
     PermError,
 }
 
-/// Format the [`DKIMResult`] as its RFC 8601 value (e.g. `pass`, `temperror`).
 impl Display for DKIMResult {
-    /// Write the textual representation of the value.
     fn fmt(&self, f: &mut Formatter<'_>) -> FmtResult {
         match self {
             Self::None => write!(f, "none"),
@@ -348,9 +331,7 @@ pub enum SPFScope {
     MFrom,
 }
 
-/// Format the [`SPFScope`] as its RFC 9990 XML value (`mfrom`).
 impl Display for SPFScope {
-    /// Write the textual representation of the value.
     fn fmt(&self, f: &mut Formatter<'_>) -> FmtResult {
         match self {
             Self::MFrom => write!(f, "mfrom"),
@@ -397,9 +378,7 @@ pub enum SPFResult {
     PermError,
 }
 
-/// Format the [`SPFResult`] as its RFC 8601 value (e.g. `softfail`, `permerror`).
 impl Display for SPFResult {
-    /// Write the textual representation of the value.
     fn fmt(&self, f: &mut Formatter<'_>) -> FmtResult {
         match self {
             Self::None => write!(f, "none"),
@@ -432,9 +411,7 @@ pub enum PolicyOverrideReasonType {
     TrustedForwarder,
 }
 
-/// Format the [`PolicyOverrideReasonType`] as its RFC 9990 XML value (e.g. `local_policy`).
 impl Display for PolicyOverrideReasonType {
-    /// Write the textual representation of the value.
     fn fmt(&self, f: &mut Formatter<'_>) -> FmtResult {
         match self {
             Self::LocalPolicy => write!(f, "local_policy"),

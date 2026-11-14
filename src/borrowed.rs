@@ -468,11 +468,7 @@ impl<'a> From<&PolicyOverrideReason<'a>> for owned::PolicyOverrideReason {
 }
 
 // Comparison between borrowed and owned variants.
-/// Compare an owned [`owned::Report`] with a borrowed [`Report`].
-///
-/// Both are equal if all their fields hold the same values.
 impl<'a> PartialEq<Report<'a>> for owned::Report {
-    /// Return `true` if all fields of both values are equal.
     fn eq(&self, other: &Report<'a>) -> bool {
         self.version.as_deref() == other.version
             && self.report_metadata == other.report_metadata
@@ -481,23 +477,13 @@ impl<'a> PartialEq<Report<'a>> for owned::Report {
     }
 }
 
-/// Compare a borrowed [`Report`] with an owned [`owned::Report`].
-///
-/// This is the symmetric counterpart of the `owned` to `borrowed` comparison.
 impl PartialEq<owned::Report> for Report<'_> {
-    /// Return `true` if all fields of both values are equal.
-    ///
-    /// Delegates to the `owned` to `borrowed` comparison.
     fn eq(&self, other: &owned::Report) -> bool {
         other == self
     }
 }
 
-/// Compare an owned [`owned::ReportMetadata`] with a borrowed [`ReportMetadata`].
-///
-/// Both are equal if all their fields hold the same values.
 impl<'a> PartialEq<ReportMetadata<'a>> for owned::ReportMetadata {
-    /// Return `true` if all fields of both values are equal.
     fn eq(&self, other: &ReportMetadata<'a>) -> bool {
         self.org_name == other.org_name
             && self.email == other.email
@@ -509,23 +495,13 @@ impl<'a> PartialEq<ReportMetadata<'a>> for owned::ReportMetadata {
     }
 }
 
-/// Compare a borrowed [`ReportMetadata`] with an owned [`owned::ReportMetadata`].
-///
-/// This is the symmetric counterpart of the `owned` to `borrowed` comparison.
 impl PartialEq<owned::ReportMetadata> for ReportMetadata<'_> {
-    /// Return `true` if all fields of both values are equal.
-    ///
-    /// Delegates to the `owned` to `borrowed` comparison.
     fn eq(&self, other: &owned::ReportMetadata) -> bool {
         other == self
     }
 }
 
-/// Compare an owned [`owned::PolicyPublished`] with a borrowed [`PolicyPublished`].
-///
-/// Both are equal if all their fields hold the same values.
 impl<'a> PartialEq<PolicyPublished<'a>> for owned::PolicyPublished {
-    /// Return `true` if all fields of both values are equal.
     fn eq(&self, other: &PolicyPublished<'a>) -> bool {
         self.domain == other.domain
             && self.discovery_method == other.discovery_method
@@ -539,23 +515,13 @@ impl<'a> PartialEq<PolicyPublished<'a>> for owned::PolicyPublished {
     }
 }
 
-/// Compare a borrowed [`PolicyPublished`] with an owned [`owned::PolicyPublished`].
-///
-/// This is the symmetric counterpart of the `owned` to `borrowed` comparison.
 impl PartialEq<owned::PolicyPublished> for PolicyPublished<'_> {
-    /// Return `true` if all fields of both values are equal.
-    ///
-    /// Delegates to the `owned` to `borrowed` comparison.
     fn eq(&self, other: &owned::PolicyPublished) -> bool {
         other == self
     }
 }
 
-/// Compare an owned [`owned::Record`] with a borrowed [`Record`].
-///
-/// Both are equal if all their fields hold the same values.
 impl<'a> PartialEq<Record<'a>> for owned::Record {
-    /// Return `true` if all fields of both values are equal.
     fn eq(&self, other: &Record<'a>) -> bool {
         self.row == other.row
             && self.identifiers == other.identifiers
@@ -563,23 +529,13 @@ impl<'a> PartialEq<Record<'a>> for owned::Record {
     }
 }
 
-/// Compare a borrowed [`Record`] with an owned [`owned::Record`].
-///
-/// This is the symmetric counterpart of the `owned` to `borrowed` comparison.
 impl PartialEq<owned::Record> for Record<'_> {
-    /// Return `true` if all fields of both values are equal.
-    ///
-    /// Delegates to the `owned` to `borrowed` comparison.
     fn eq(&self, other: &owned::Record) -> bool {
         other == self
     }
 }
 
-/// Compare an owned [`owned::Row`] with a borrowed [`Row`].
-///
-/// Both are equal if all their fields hold the same values.
 impl<'a> PartialEq<Row<'a>> for owned::Row {
-    /// Return `true` if all fields of both values are equal.
     fn eq(&self, other: &Row<'a>) -> bool {
         self.source_ip == other.source_ip
             && self.count == other.count
@@ -587,23 +543,13 @@ impl<'a> PartialEq<Row<'a>> for owned::Row {
     }
 }
 
-/// Compare a borrowed [`Row`] with an owned [`owned::Row`].
-///
-/// This is the symmetric counterpart of the `owned` to `borrowed` comparison.
 impl PartialEq<owned::Row> for Row<'_> {
-    /// Return `true` if all fields of both values are equal.
-    ///
-    /// Delegates to the `owned` to `borrowed` comparison.
     fn eq(&self, other: &owned::Row) -> bool {
         other == self
     }
 }
 
-/// Compare an owned [`owned::PolicyEvaluated`] with a borrowed [`PolicyEvaluated`].
-///
-/// Both are equal if all their fields hold the same values.
 impl<'a> PartialEq<PolicyEvaluated<'a>> for owned::PolicyEvaluated {
-    /// Return `true` if all fields of both values are equal.
     fn eq(&self, other: &PolicyEvaluated<'a>) -> bool {
         self.disposition == other.disposition
             && self.dkim == other.dkim
@@ -612,23 +558,13 @@ impl<'a> PartialEq<PolicyEvaluated<'a>> for owned::PolicyEvaluated {
     }
 }
 
-/// Compare a borrowed [`PolicyEvaluated`] with an owned [`owned::PolicyEvaluated`].
-///
-/// This is the symmetric counterpart of the `owned` to `borrowed` comparison.
 impl PartialEq<owned::PolicyEvaluated> for PolicyEvaluated<'_> {
-    /// Return `true` if all fields of both values are equal.
-    ///
-    /// Delegates to the `owned` to `borrowed` comparison.
     fn eq(&self, other: &owned::PolicyEvaluated) -> bool {
         other == self
     }
 }
 
-/// Compare an owned [`owned::Identifiers`] with a borrowed [`Identifiers`].
-///
-/// Both are equal if all their fields hold the same values.
 impl<'a> PartialEq<Identifiers<'a>> for owned::Identifiers {
-    /// Return `true` if all fields of both values are equal.
     fn eq(&self, other: &Identifiers<'a>) -> bool {
         self.header_from == other.header_from
             && self.envelope_from.as_deref() == other.envelope_from
@@ -636,23 +572,13 @@ impl<'a> PartialEq<Identifiers<'a>> for owned::Identifiers {
     }
 }
 
-/// Compare a borrowed [`Identifiers`] with an owned [`owned::Identifiers`].
-///
-/// This is the symmetric counterpart of the `owned` to `borrowed` comparison.
 impl PartialEq<owned::Identifiers> for Identifiers<'_> {
-    /// Return `true` if all fields of both values are equal.
-    ///
-    /// Delegates to the `owned` to `borrowed` comparison.
     fn eq(&self, other: &owned::Identifiers) -> bool {
         other == self
     }
 }
 
-/// Compare an owned [`owned::AuthResults`] with a borrowed [`AuthResults`].
-///
-/// Both are equal if all their fields hold the same values.
 impl<'a> PartialEq<AuthResults<'a>> for owned::AuthResults {
-    /// Return `true` if all fields of both values are equal.
     fn eq(&self, other: &AuthResults<'a>) -> bool {
         self.dkim == other.dkim
             && match (&self.spf, &other.spf) {
@@ -663,23 +589,13 @@ impl<'a> PartialEq<AuthResults<'a>> for owned::AuthResults {
     }
 }
 
-/// Compare a borrowed [`AuthResults`] with an owned [`owned::AuthResults`].
-///
-/// This is the symmetric counterpart of the `owned` to `borrowed` comparison.
 impl PartialEq<owned::AuthResults> for AuthResults<'_> {
-    /// Return `true` if all fields of both values are equal.
-    ///
-    /// Delegates to the `owned` to `borrowed` comparison.
     fn eq(&self, other: &owned::AuthResults) -> bool {
         other == self
     }
 }
 
-/// Compare an owned [`owned::DKIMAuthResult`] with a borrowed [`DKIMAuthResult`].
-///
-/// Both are equal if all their fields hold the same values.
 impl<'a> PartialEq<DKIMAuthResult<'a>> for owned::DKIMAuthResult {
-    /// Return `true` if all fields of both values are equal.
     fn eq(&self, other: &DKIMAuthResult<'a>) -> bool {
         self.domain == other.domain
             && self.selector == other.selector
@@ -687,23 +603,13 @@ impl<'a> PartialEq<DKIMAuthResult<'a>> for owned::DKIMAuthResult {
             && self.human_result.as_deref() == other.human_result
     }
 }
-/// Compare a borrowed [`DKIMAuthResult`] with an owned [`owned::DKIMAuthResult`].
-///
-/// This is the symmetric counterpart of the `owned` to `borrowed` comparison.
 impl PartialEq<owned::DKIMAuthResult> for DKIMAuthResult<'_> {
-    /// Return `true` if all fields of both values are equal.
-    ///
-    /// Delegates to the `owned` to `borrowed` comparison.
     fn eq(&self, other: &owned::DKIMAuthResult) -> bool {
         other == self
     }
 }
 
-/// Compare an owned [`owned::SPFAuthResult`] with a borrowed [`SPFAuthResult`].
-///
-/// Both are equal if all their fields hold the same values.
 impl<'a> PartialEq<SPFAuthResult<'a>> for owned::SPFAuthResult {
-    /// Return `true` if all fields of both values are equal.
     fn eq(&self, other: &SPFAuthResult<'a>) -> bool {
         self.domain == other.domain
             && self.scope == other.scope
@@ -712,35 +618,19 @@ impl<'a> PartialEq<SPFAuthResult<'a>> for owned::SPFAuthResult {
     }
 }
 
-/// Compare a borrowed [`SPFAuthResult`] with an owned [`owned::SPFAuthResult`].
-///
-/// This is the symmetric counterpart of the `owned` to `borrowed` comparison.
 impl PartialEq<owned::SPFAuthResult> for SPFAuthResult<'_> {
-    /// Return `true` if all fields of both values are equal.
-    ///
-    /// Delegates to the `owned` to `borrowed` comparison.
     fn eq(&self, other: &owned::SPFAuthResult) -> bool {
         other == self
     }
 }
 
-/// Compare an owned [`owned::PolicyOverrideReason`] with a borrowed [`PolicyOverrideReason`].
-///
-/// Both are equal if all their fields hold the same values.
 impl<'a> PartialEq<PolicyOverrideReason<'a>> for owned::PolicyOverrideReason {
-    /// Return `true` if all fields of both values are equal.
     fn eq(&self, other: &PolicyOverrideReason<'a>) -> bool {
         self.reason_type == other.reason_type && self.comment.as_deref() == other.comment
     }
 }
 
-/// Compare a borrowed [`PolicyOverrideReason`] with an owned [`owned::PolicyOverrideReason`].
-///
-/// This is the symmetric counterpart of the `owned` to `borrowed` comparison.
 impl PartialEq<owned::PolicyOverrideReason> for PolicyOverrideReason<'_> {
-    /// Return `true` if all fields of both values are equal.
-    ///
-    /// Delegates to the `owned` to `borrowed` comparison.
     fn eq(&self, other: &owned::PolicyOverrideReason) -> bool {
         other == self
     }

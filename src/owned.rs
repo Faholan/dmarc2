@@ -34,14 +34,13 @@
 //! #     <auth_results><spf><domain>road.runner</domain><result>pass</result></spf></auth_results>
 //! #   </record>
 //! # </feedback>"#;
-//! let report: Report = xml.parse()?;
+//! let report: Report = xml.parse().expect("valid DMARC report");
 //!
 //! assert_eq!(report.policy_published.p, Disposition::None);
 //!
 //! // Total number of messages covered by the report.
 //! let total: u64 = report.records.iter().map(|r| r.row.count).sum();
 //! assert_eq!(total, 195);
-//! # Ok::<(), dmarc2::DeError>(())
 //! ```
 
 use core::net::IpAddr;

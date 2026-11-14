@@ -192,12 +192,11 @@ pub use de::DeError;
 /// #     <auth_results><spf><domain>road.runner</domain><result>pass</result></spf></auth_results>
 /// #   </record>
 /// # </feedback>"#;
-/// let report = dmarc2::parse(xml)?;
+/// let report = dmarc2::parse(xml).expect("valid DMARC report");
 ///
 /// assert_eq!(report.report_metadata.org_name, "ACME corporation");
 /// assert_eq!(report.policy_published.domain, "road.runner");
 /// assert_eq!(report.records[0].row.count, 195);
-/// # Ok::<(), dmarc2::DeError>(())
 /// ```
 pub fn parse(s: &str) -> Result<borrowed::Report<'_>, DeError> {
     de::from_str(s)
@@ -250,10 +249,10 @@ impl<'a> TryFrom<&'a str> for borrowed::Report<'a> {
 /// #   </record>
 /// # </feedback>"#;
 /// // The report doesn't borrow from its input, which can be dropped.
-/// let report: dmarc2::owned::Report = dmarc2::parse_owned(&xml.to_owned())?;
+/// let report: dmarc2::owned::Report =
+///     dmarc2::parse_owned(xml).expect("valid DMARC report");
 ///
 /// assert_eq!(report.report_metadata.org_name, "ACME corporation");
-/// # Ok::<(), dmarc2::DeError>(())
 /// ```
 pub fn parse_owned(s: &str) -> Result<owned::Report, DeError> {
     de::from_str(s)
@@ -296,22 +295,28 @@ impl TryFrom<&str> for owned::Report {
 ///
 /// # Examples
 ///
-/// ```no_run
-/// use std::fs::File;
 /// use std::io::BufReader;
 ///
-/// let file = File::open("report.xml")?;
-/// let report = dmarc2::parse_reader(BufReader::new(file))?;
+/// let xml = r#"<feedback>
+///   <report_metadata>
+///     <org_name>ACME corporation</org_name>
+///     <email>wile.e.coyote@acme.corp</email>
+///     <report_id>beepbeep</report_id>
+///     <date_range><begin>1609459200</begin><end>1609545600</end></date_range>
+///   </report_metadata>
+///   <policy_published><domain>road.runner</domain><p>none</p></policy_published>
+/// </feedback>"#;
+/// let report = dmarc2::parse_reader(BufReader::new(xml.as_bytes()))
+///     .expect("valid DMARC report");
 ///
-/// println!("Report from {}", report.report_metadata.org_name);
-/// # Ok::<(), Box<dyn std::error::Error>>(())
+/// assert_eq!(report.report_metadata.org_name, "ACME corporation");
 /// ```
 pub fn parse_reader<T: BufRead>(reader: T) -> Result<owned::Report, DeError> {
     de::from_reader(reader)
 }
 
-/// Dummy item carrying the README as its documentation,
-/// so that the README's code examples are run as doctests.
+// Dummy item carrying the README as its documentation,
+// so that the README's code examples are run as doctests.
 #[cfg(doctest)]
 #[doc = include_str!("../README.md")]
 struct TestReadme;
