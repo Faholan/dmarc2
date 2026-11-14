@@ -1,3 +1,4 @@
+//! Unit tests parsing sample DMARC aggregate reports.
 #![allow(
     clippy::panic_in_result_fn,
     clippy::unwrap_used,
@@ -8,8 +9,10 @@ use core::net::{IpAddr, Ipv4Addr};
 use crate::{borrowed::PolicyOverrideReason, owned, parse, parse_owned};
 use quick_xml::de::DeError;
 
+/// Sample report given in RFC 9990.
 const RFC_SAMPLE: &str = include_str!("tests/rfc.xml");
 
+/// Parse the RFC sample report and check its content field by field.
 #[test]
 fn rfc_sample() -> Result<(), DeError> {
     let report = parse(RFC_SAMPLE)?;
@@ -90,8 +93,10 @@ fn rfc_sample() -> Result<(), DeError> {
     Ok(())
 }
 
+/// Report containing only the required elements.
 const XML_MINIMAL: &str = include_str!("tests/minimal.xml");
 
+/// Parse a minimal report, and check that the borrowed and owned variants agree.
 #[test]
 fn minimal_xml() -> Result<(), DeError> {
     let report = parse(XML_MINIMAL)?;
@@ -105,6 +110,9 @@ fn minimal_xml() -> Result<(), DeError> {
 }
 
 /// Simply check that parsing doesn't fail.
+///
+/// Also checks that the borrowed, owned and converted
+/// variants of the report are equal.
 fn minimum_example(s: &str) -> Result<(), DeError> {
     let report = parse(s)?;
     let report_owned = parse_owned(s)?;
@@ -123,78 +131,100 @@ fn xml1() -> Result<(), DeError> {
     minimum_example(XML_1)
 }
 
+/// Real-world report sample number 2.
 const XML_2: &str = include_str!("tests/example2.xml");
 
+/// Parse real-world report sample number 2.
 #[test]
 fn xml2() -> Result<(), DeError> {
     minimum_example(XML_2)
 }
 
+/// Real-world report sample number 3.
 const XML_3: &str = include_str!("tests/example3.xml");
 
+/// Parse real-world report sample number 3.
 #[test]
 fn xml3() -> Result<(), DeError> {
     minimum_example(XML_3)
 }
 
+/// Real-world report sample number 4.
 const XML_4: &str = include_str!("tests/example4.xml");
 
+/// Parse real-world report sample number 4.
 #[test]
 fn xml4() -> Result<(), DeError> {
     minimum_example(XML_4)
 }
 
+/// Real-world report sample number 5.
 const XML_5: &str = include_str!("tests/example5.xml");
 
+/// Parse real-world report sample number 5.
 #[test]
 fn xml5() -> Result<(), DeError> {
     minimum_example(XML_5)
 }
 
+/// Real-world report sample number 6.
 const XML_6: &str = include_str!("tests/example6.xml");
 
+/// Parse real-world report sample number 6.
 #[test]
 fn xml6() -> Result<(), DeError> {
     minimum_example(XML_6)
 }
 
+/// Real-world report sample number 7.
 const XML_7: &str = include_str!("tests/example7.xml");
 
+/// Parse real-world report sample number 7.
 #[test]
 fn xml7() -> Result<(), DeError> {
     minimum_example(XML_7)
 }
 
+/// Real-world report sample number 8.
 const XML_8: &str = include_str!("tests/example8.xml");
 
+/// Parse real-world report sample number 8.
 #[test]
 fn xml8() -> Result<(), DeError> {
     minimum_example(XML_8)
 }
 
+/// Real-world report sample number 9.
 const XML_9: &str = include_str!("tests/example9.xml");
 
+/// Parse real-world report sample number 9.
 #[test]
 fn xml9() -> Result<(), DeError> {
     minimum_example(XML_9)
 }
 
+/// Real-world report sample number 10.
 const XML_10: &str = include_str!("tests/example10.xml");
 
+/// Parse real-world report sample number 10.
 #[test]
 fn xml10() -> Result<(), DeError> {
     minimum_example(XML_10)
 }
 
+/// Real-world report sample number 11.
 const XML_11: &str = include_str!("tests/example11.xml");
 
+/// Parse real-world report sample number 11.
 #[test]
 fn xml11() -> Result<(), DeError> {
     minimum_example(XML_11)
 }
 
+/// Real-world report sample number 12.
 const XML_12: &str = include_str!("tests/example12.xml");
 
+/// Parse real-world report sample number 12.
 #[test]
 fn xml12() -> Result<(), DeError> {
     minimum_example(XML_12)

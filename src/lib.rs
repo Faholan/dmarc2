@@ -170,13 +170,46 @@ pub use de::DeError;
 ///
 /// Returns [`de::DeError`] if the XML is invalid or does not comform
 /// to the DMARC aggregate report as set in RFC 9990.
+///
+/// # Examples
+///
+/// ```
+/// # let xml = r#"<feedback>
+/// #   <report_metadata>
+/// #     <org_name>ACME corporation</org_name>
+/// #     <email>wile.e.coyote@acme.corp</email>
+/// #     <report_id>beepbeep</report_id>
+/// #     <date_range><begin>1609459200</begin><end>1609545600</end></date_range>
+/// #   </report_metadata>
+/// #   <policy_published><domain>road.runner</domain><p>none</p></policy_published>
+/// #   <record>
+/// #     <row>
+/// #       <source_ip>192.0.2.1</source_ip>
+/// #       <count>195</count>
+/// #       <policy_evaluated><disposition>none</disposition><dkim>pass</dkim><spf>pass</spf></policy_evaluated>
+/// #     </row>
+/// #     <identifiers><header_from>road.runner</header_from></identifiers>
+/// #     <auth_results><spf><domain>road.runner</domain><result>pass</result></spf></auth_results>
+/// #   </record>
+/// # </feedback>"#;
+/// let report = dmarc2::parse(xml).expect("valid DMARC report");
+///
+/// assert_eq!(report.report_metadata.org_name, "ACME corporation");
+/// assert_eq!(report.policy_published.domain, "road.runner");
+/// assert_eq!(report.records[0].row.count, 195);
+/// ```
 pub fn parse(s: &str) -> Result<borrowed::Report<'_>, DeError> {
     de::from_str(s)
 }
 
+/// Parse a borrowed DMARC aggregate report from an XML string.
+///
+/// Equivalent to calling [`parse`].
 impl<'a> TryFrom<&'a str> for borrowed::Report<'a> {
+    /// Error returned when the XML is not a valid DMARC aggregate report.
     type Error = DeError;
 
+    /// Parse the report, borrowing from `value`.
     fn try_from(value: &'a str) -> Result<Self, Self::Error> {
         parse(value)
     }
@@ -193,21 +226,59 @@ impl<'a> TryFrom<&'a str> for borrowed::Report<'a> {
 ///
 /// Returns [`de::DeError`] if the XML is invalid or does not comform
 /// to the DMARC aggregate report as set in RFC 9990.
+///
+/// # Examples
+///
+/// ```
+/// # let xml = r#"<feedback>
+/// #   <report_metadata>
+/// #     <org_name>ACME corporation</org_name>
+/// #     <email>wile.e.coyote@acme.corp</email>
+/// #     <report_id>beepbeep</report_id>
+/// #     <date_range><begin>1609459200</begin><end>1609545600</end></date_range>
+/// #   </report_metadata>
+/// #   <policy_published><domain>road.runner</domain><p>none</p></policy_published>
+/// #   <record>
+/// #     <row>
+/// #       <source_ip>192.0.2.1</source_ip>
+/// #       <count>195</count>
+/// #       <policy_evaluated><disposition>none</disposition><dkim>pass</dkim><spf>pass</spf></policy_evaluated>
+/// #     </row>
+/// #     <identifiers><header_from>road.runner</header_from></identifiers>
+/// #     <auth_results><spf><domain>road.runner</domain><result>pass</result></spf></auth_results>
+/// #   </record>
+/// # </feedback>"#;
+/// // The report doesn't borrow from its input, which can be dropped.
+/// let report: dmarc2::owned::Report =
+///     dmarc2::parse_owned(xml).expect("valid DMARC report");
+///
+/// assert_eq!(report.report_metadata.org_name, "ACME corporation");
+/// ```
 pub fn parse_owned(s: &str) -> Result<owned::Report, DeError> {
     de::from_str(s)
 }
 
+/// Parse an owned DMARC aggregate report from an XML string.
+///
+/// Equivalent to calling [`parse_owned`], and enables `xml.parse::<owned::Report>()`.
 impl FromStr for owned::Report {
+    /// Error returned when the XML is not a valid DMARC aggregate report.
     type Err = DeError;
 
+    /// Parse the report, copying data from `s`.
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         parse_owned(s)
     }
 }
 
+/// Parse an owned DMARC aggregate report from an XML string.
+///
+/// Equivalent to calling [`parse_owned`].
 impl TryFrom<&str> for owned::Report {
+    /// Error returned when the XML is not a valid DMARC aggregate report.
     type Error = DeError;
 
+    /// Parse the report, copying data from `value`.
     fn try_from(value: &str) -> Result<Self, Self::Error> {
         parse_owned(value)
     }
@@ -215,15 +286,37 @@ impl TryFrom<&str> for owned::Report {
 
 /// Parse a DMARC aggregate report from an XML reader.
 ///
+/// The returned report is owned, as data cannot be borrowed from a reader.
+///
 /// # Errors
 ///
 /// Returns [`de::DeError`] if the XML is invalid or does not comform
 /// to the DMARC aggregate report as set in RFC 9990.
+///
+/// # Examples
+///
+/// use std::io::BufReader;
+///
+/// let xml = r#"<feedback>
+///   <report_metadata>
+///     <org_name>ACME corporation</org_name>
+///     <email>wile.e.coyote@acme.corp</email>
+///     <report_id>beepbeep</report_id>
+///     <date_range><begin>1609459200</begin><end>1609545600</end></date_range>
+///   </report_metadata>
+///   <policy_published><domain>road.runner</domain><p>none</p></policy_published>
+/// </feedback>"#;
+/// let report = dmarc2::parse_reader(BufReader::new(xml.as_bytes()))
+///     .expect("valid DMARC report");
+///
+/// assert_eq!(report.report_metadata.org_name, "ACME corporation");
+/// ```
 pub fn parse_reader<T: BufRead>(reader: T) -> Result<owned::Report, DeError> {
     de::from_reader(reader)
 }
 
-// Run examples from README.
+// Dummy item carrying the README as its documentation,
+// so that the README's code examples are run as doctests.
 #[cfg(doctest)]
 #[doc = include_str!("../README.md")]
 struct TestReadme;

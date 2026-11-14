@@ -190,8 +190,10 @@ pub struct DKIMAuthResult<'a> {
     pub domain: &'a str,
 
     /// Selector used during validation ("s=" tag of the signature).
+    ///
+    /// Some DMARC implementations forego the selector even though it is
+    /// required by the RFC: it is then left empty.
     #[serde(default)]
-    // Some DMARC implementations forego the selector even though it is required by the RFC.
     pub selector: &'a str,
 
     /// Result of the DKIM verification.
@@ -207,8 +209,10 @@ pub struct DKIMAuthResult<'a> {
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Deserialize)]
 pub struct SPFAuthResult<'a> {
     /// Domain used during validation.
+    ///
+    /// Some DMARC implementations forego the domain even though it is
+    /// required by the RFC: it is then left empty.
     #[serde(default)]
-    // Some DMARC implementations forego the domain even though it is required by the RFC.
     pub domain: &'a str,
 
     /// Source of the domain used during validation.
@@ -463,7 +467,7 @@ impl<'a> From<&PolicyOverrideReason<'a>> for owned::PolicyOverrideReason {
     }
 }
 
-// Comparison.
+// Comparison between borrowed and owned variants.
 impl<'a> PartialEq<Report<'a>> for owned::Report {
     fn eq(&self, other: &Report<'a>) -> bool {
         self.version.as_deref() == other.version

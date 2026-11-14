@@ -19,14 +19,25 @@ pub struct DateRange {
     pub end: i64,
 }
 
-// Some DMARC reporters don't respect the RFC and put the timestamps as floating-point values, not integers
-// This workaround allows us to parse both as integers
+/// Intermediate representation of a `<begin>` or `<end>` timestamp element.
+///
+/// Some DMARC reporters don't respect the RFC and put the timestamps as
+/// floating-point values (e.g. `1609459200.0`), not integers.
+/// This workaround allows us to parse both as integers.
 #[derive(Debug, Clone, Copy, PartialEq, Deserialize)]
 struct TimestampField {
+    /// Unix timestamp, truncated to an integer.
     #[serde(rename = "$text", deserialize_with = "deserialize_int")]
     value: i64,
 }
 
+/// Deserialize a Unix timestamp element into an [`i64`].
+///
+/// Accepts both integer and floating-point textual values, see [`TimestampField`].
+///
+/// # Errors
+///
+/// Returns an error if the element's text is not a valid number.
 fn deserialize_timestamp<'de, D>(deserializer: D) -> Result<i64, D::Error>
 where
     D: de::Deserializer<'de>,
@@ -36,6 +47,14 @@ where
     Ok(t.value)
 }
 
+/// Deserialize a string into an [`i64`], ignoring any fractional part.
+///
+/// Surrounding double quotes are stripped, and everything after the
+/// first `.` is discarded, so that `"1609459200.5"` yields `1609459200`.
+///
+/// # Errors
+///
+/// Returns an error if the integer part cannot be parsed as an [`i64`].
 fn deserialize_int<'de, D>(deserializer: D) -> Result<i64, D::Error>
 where
     D: de::Deserializer<'de>,
@@ -128,11 +147,23 @@ impl Display for FailureReportingParseError {
     }
 }
 
+/// [`FailureReportingParseError`] is a standard error type.
 impl Error for FailureReportingParseError {}
 
+/// Parse the value of a DMARC `fo` tag.
+///
+/// The value is a colon-separated list of options among `0`, `1`, `d` and `s`,
+/// e.g. `1:d:s`.
 impl FromStr for FailureReporting {
+    /// Error returned when an unknown option is encountered.
     type Err = FailureReportingParseError;
 
+    /// Parse a colon-separated list of failure reporting options.
+    ///
+    /// # Errors
+    ///
+    /// Returns [`FailureReportingParseError::InvalidOption`] if an option
+    /// is not one of `0`, `1`, `d` or `s`.
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         let mut res = Self::ALL;
 
@@ -166,6 +197,15 @@ impl Display for FailureReporting {
     }
 }
 
+/// Deserialize the optional `<fo>` element of a published policy
+/// into a [`FailureReporting`] value.
+///
+/// A missing element yields [`None`].
+///
+/// # Errors
+///
+/// Returns an error if the value contains an option other than
+/// `0`, `1`, `d` or `s` (see [`FailureReporting::from_str`]).
 pub(crate) fn deserialize_failure_reporting<'de, D>(
     deserializer: D,
 ) -> Result<Option<FailureReporting>, D::Error>
@@ -179,6 +219,13 @@ where
     })
 }
 
+/// Deserialize the optional `<testing>` element of a published policy into a [`bool`].
+///
+/// `"y"` maps to `Some(true)`, `"n"` to `Some(false)`, and a missing element to [`None`].
+///
+/// # Errors
+///
+/// Returns an error if the value is neither `"y"` nor `"n"`.
 pub(crate) fn deserialize_testing<'de, D>(deserializer: D) -> Result<Option<bool>, D::Error>
 where
     D: de::Deserializer<'de>,
@@ -377,13 +424,21 @@ impl Display for PolicyOverrideReasonType {
 }
 
 // Trait implementations
+/// Convert a boolean into an [`AlignmentResult`].
+///
+/// `true` maps to [`AlignmentResult::Pass`] and `false` to [`AlignmentResult::Fail`].
 impl From<bool> for AlignmentResult {
+    /// Return [`AlignmentResult::Pass`] if `value` is `true`, [`AlignmentResult::Fail`] otherwise.
     fn from(value: bool) -> Self {
         if value { Self::Pass } else { Self::Fail }
     }
 }
 
+/// Convert an [`AlignmentResult`] into a boolean.
+///
+/// [`AlignmentResult::Pass`] maps to `true` and [`AlignmentResult::Fail`] to `false`.
 impl From<AlignmentResult> for bool {
+    /// Return `true` if the alignment passed.
     fn from(value: AlignmentResult) -> Self {
         matches!(value, AlignmentResult::Pass)
     }
