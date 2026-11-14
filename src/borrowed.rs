@@ -238,12 +238,8 @@ pub struct PolicyOverrideReason<'a> {
     pub comment: Option<&'a str>,
 }
 
-// Conversion from borrowed to owned variants.
-/// Convert a borrowed [`Report`] into an owned [`owned::Report`].
-///
-/// Borrowed strings are copied into newly allocated [`String`]s.
+// Conversion
 impl<'a> From<Report<'a>> for owned::Report {
-    /// Consume the borrowed value and build its owned counterpart.
     fn from(value: Report<'a>) -> Self {
         Self {
             version: value.version.map(ToOwned::to_owned),
@@ -253,11 +249,7 @@ impl<'a> From<Report<'a>> for owned::Report {
         }
     }
 }
-/// Convert a reference to a borrowed [`Report`] into an owned [`owned::Report`].
-///
-/// The borrowed value is left untouched, and its strings are copied.
 impl<'a> From<&Report<'a>> for owned::Report {
-    /// Build an owned copy of the referenced borrowed value.
     fn from(value: &Report<'a>) -> Self {
         Self {
             version: value.version.map(ToOwned::to_owned),
@@ -268,11 +260,7 @@ impl<'a> From<&Report<'a>> for owned::Report {
     }
 }
 
-/// Convert a borrowed [`ReportMetadata`] into an owned [`owned::ReportMetadata`].
-///
-/// Borrowed strings are copied into newly allocated [`String`]s.
 impl<'a> From<ReportMetadata<'a>> for owned::ReportMetadata {
-    /// Consume the borrowed value and build its owned counterpart.
     fn from(value: ReportMetadata<'a>) -> Self {
         Self {
             org_name: value.org_name.to_owned(),
@@ -286,11 +274,7 @@ impl<'a> From<ReportMetadata<'a>> for owned::ReportMetadata {
     }
 }
 
-/// Convert a reference to a borrowed [`ReportMetadata`] into an owned [`owned::ReportMetadata`].
-///
-/// The borrowed value is left untouched, and its strings are copied.
 impl<'a> From<&ReportMetadata<'a>> for owned::ReportMetadata {
-    /// Build an owned copy of the referenced borrowed value.
     fn from(value: &ReportMetadata<'a>) -> Self {
         Self {
             org_name: value.org_name.to_owned(),
@@ -304,11 +288,7 @@ impl<'a> From<&ReportMetadata<'a>> for owned::ReportMetadata {
     }
 }
 
-/// Convert a borrowed [`PolicyPublished`] into an owned [`owned::PolicyPublished`].
-///
-/// Borrowed strings are copied into newly allocated [`String`]s.
 impl<'a> From<PolicyPublished<'a>> for owned::PolicyPublished {
-    /// Consume the borrowed value and build its owned counterpart.
     fn from(value: PolicyPublished<'a>) -> Self {
         Self {
             domain: value.domain.to_owned(),
@@ -325,11 +305,7 @@ impl<'a> From<PolicyPublished<'a>> for owned::PolicyPublished {
     }
 }
 
-/// Convert a reference to a borrowed [`PolicyPublished`] into an owned [`owned::PolicyPublished`].
-///
-/// The borrowed value is left untouched, and its strings are copied.
 impl<'a> From<&PolicyPublished<'a>> for owned::PolicyPublished {
-    /// Build an owned copy of the referenced borrowed value.
     fn from(value: &PolicyPublished<'a>) -> Self {
         Self {
             domain: value.domain.to_owned(),
@@ -346,11 +322,7 @@ impl<'a> From<&PolicyPublished<'a>> for owned::PolicyPublished {
     }
 }
 
-/// Convert a borrowed [`Record`] into an owned [`owned::Record`].
-///
-/// Borrowed strings are copied into newly allocated [`String`]s.
 impl<'a> From<Record<'a>> for owned::Record {
-    /// Consume the borrowed value and build its owned counterpart.
     fn from(value: Record<'a>) -> Self {
         Self {
             row: value.row.into(),
@@ -360,11 +332,7 @@ impl<'a> From<Record<'a>> for owned::Record {
     }
 }
 
-/// Convert a reference to a borrowed [`Record`] into an owned [`owned::Record`].
-///
-/// The borrowed value is left untouched, and its strings are copied.
 impl<'a> From<&Record<'a>> for owned::Record {
-    /// Build an owned copy of the referenced borrowed value.
     fn from(value: &Record<'a>) -> Self {
         Self {
             row: From::from(&value.row),
@@ -374,11 +342,7 @@ impl<'a> From<&Record<'a>> for owned::Record {
     }
 }
 
-/// Convert a borrowed [`Row`] into an owned [`owned::Row`].
-///
-/// Borrowed strings are copied into newly allocated [`String`]s.
 impl<'a> From<Row<'a>> for owned::Row {
-    /// Consume the borrowed value and build its owned counterpart.
     fn from(value: Row<'a>) -> Self {
         Self {
             source_ip: value.source_ip,
@@ -388,11 +352,7 @@ impl<'a> From<Row<'a>> for owned::Row {
     }
 }
 
-/// Convert a reference to a borrowed [`Row`] into an owned [`owned::Row`].
-///
-/// The borrowed value is left untouched, and its strings are copied.
 impl<'a> From<&Row<'a>> for owned::Row {
-    /// Build an owned copy of the referenced borrowed value.
     fn from(value: &Row<'a>) -> Self {
         Self {
             source_ip: value.source_ip,
@@ -402,11 +362,7 @@ impl<'a> From<&Row<'a>> for owned::Row {
     }
 }
 
-/// Convert a borrowed [`PolicyEvaluated`] into an owned [`owned::PolicyEvaluated`].
-///
-/// Borrowed strings are copied into newly allocated [`String`]s.
 impl<'a> From<PolicyEvaluated<'a>> for owned::PolicyEvaluated {
-    /// Consume the borrowed value and build its owned counterpart.
     fn from(value: PolicyEvaluated<'a>) -> Self {
         Self {
             disposition: value.disposition,
@@ -417,11 +373,7 @@ impl<'a> From<PolicyEvaluated<'a>> for owned::PolicyEvaluated {
     }
 }
 
-/// Convert a reference to a borrowed [`PolicyEvaluated`] into an owned [`owned::PolicyEvaluated`].
-///
-/// The borrowed value is left untouched, and its strings are copied.
 impl<'a> From<&PolicyEvaluated<'a>> for owned::PolicyEvaluated {
-    /// Build an owned copy of the referenced borrowed value.
     fn from(value: &PolicyEvaluated<'a>) -> Self {
         Self {
             disposition: value.disposition,
@@ -432,11 +384,7 @@ impl<'a> From<&PolicyEvaluated<'a>> for owned::PolicyEvaluated {
     }
 }
 
-/// Convert a borrowed [`Identifiers`] into an owned [`owned::Identifiers`].
-///
-/// Borrowed strings are copied into newly allocated [`String`]s.
 impl<'a> From<Identifiers<'a>> for owned::Identifiers {
-    /// Consume the borrowed value and build its owned counterpart.
     fn from(value: Identifiers<'a>) -> Self {
         Self {
             header_from: value.header_from.to_owned(),
@@ -446,21 +394,13 @@ impl<'a> From<Identifiers<'a>> for owned::Identifiers {
     }
 }
 
-/// Convert a reference to a borrowed [`Identifiers`] into an owned [`owned::Identifiers`].
-///
-/// The borrowed value is left untouched, and its strings are copied.
 impl<'a> From<&Identifiers<'a>> for owned::Identifiers {
-    /// Build an owned copy of the referenced borrowed value.
     fn from(value: &Identifiers<'a>) -> Self {
         From::from(*value)
     }
 }
 
-/// Convert a borrowed [`AuthResults`] into an owned [`owned::AuthResults`].
-///
-/// Borrowed strings are copied into newly allocated [`String`]s.
 impl<'a> From<AuthResults<'a>> for owned::AuthResults {
-    /// Consume the borrowed value and build its owned counterpart.
     fn from(value: AuthResults<'a>) -> Self {
         Self {
             dkim: value.dkim.into_iter().map(From::from).collect(),
@@ -469,11 +409,7 @@ impl<'a> From<AuthResults<'a>> for owned::AuthResults {
     }
 }
 
-/// Convert a reference to a borrowed [`AuthResults`] into an owned [`owned::AuthResults`].
-///
-/// The borrowed value is left untouched, and its strings are copied.
 impl<'a> From<&AuthResults<'a>> for owned::AuthResults {
-    /// Build an owned copy of the referenced borrowed value.
     fn from(value: &AuthResults<'a>) -> Self {
         Self {
             dkim: value.dkim.iter().map(From::from).collect(),
@@ -482,11 +418,7 @@ impl<'a> From<&AuthResults<'a>> for owned::AuthResults {
     }
 }
 
-/// Convert a borrowed [`DKIMAuthResult`] into an owned [`owned::DKIMAuthResult`].
-///
-/// Borrowed strings are copied into newly allocated [`String`]s.
 impl<'a> From<DKIMAuthResult<'a>> for owned::DKIMAuthResult {
-    /// Consume the borrowed value and build its owned counterpart.
     fn from(value: DKIMAuthResult<'a>) -> Self {
         Self {
             domain: value.domain.to_owned(),
@@ -497,21 +429,13 @@ impl<'a> From<DKIMAuthResult<'a>> for owned::DKIMAuthResult {
     }
 }
 
-/// Convert a reference to a borrowed [`DKIMAuthResult`] into an owned [`owned::DKIMAuthResult`].
-///
-/// The borrowed value is left untouched, and its strings are copied.
 impl<'a> From<&DKIMAuthResult<'a>> for owned::DKIMAuthResult {
-    /// Build an owned copy of the referenced borrowed value.
     fn from(value: &DKIMAuthResult<'a>) -> Self {
         From::from(*value)
     }
 }
 
-/// Convert a borrowed [`SPFAuthResult`] into an owned [`owned::SPFAuthResult`].
-///
-/// Borrowed strings are copied into newly allocated [`String`]s.
 impl<'a> From<SPFAuthResult<'a>> for owned::SPFAuthResult {
-    /// Consume the borrowed value and build its owned counterpart.
     fn from(value: SPFAuthResult<'a>) -> Self {
         Self {
             domain: value.domain.to_owned(),
@@ -522,21 +446,13 @@ impl<'a> From<SPFAuthResult<'a>> for owned::SPFAuthResult {
     }
 }
 
-/// Convert a reference to a borrowed [`SPFAuthResult`] into an owned [`owned::SPFAuthResult`].
-///
-/// The borrowed value is left untouched, and its strings are copied.
 impl<'a> From<&SPFAuthResult<'a>> for owned::SPFAuthResult {
-    /// Build an owned copy of the referenced borrowed value.
     fn from(value: &SPFAuthResult<'a>) -> Self {
         From::from(*value)
     }
 }
 
-/// Convert a borrowed [`PolicyOverrideReason`] into an owned [`owned::PolicyOverrideReason`].
-///
-/// Borrowed strings are copied into newly allocated [`String`]s.
 impl<'a> From<PolicyOverrideReason<'a>> for owned::PolicyOverrideReason {
-    /// Consume the borrowed value and build its owned counterpart.
     fn from(value: PolicyOverrideReason<'a>) -> Self {
         Self {
             reason_type: value.reason_type,
@@ -545,11 +461,7 @@ impl<'a> From<PolicyOverrideReason<'a>> for owned::PolicyOverrideReason {
     }
 }
 
-/// Convert a reference to a borrowed [`PolicyOverrideReason`] into an owned [`owned::PolicyOverrideReason`].
-///
-/// The borrowed value is left untouched, and its strings are copied.
 impl<'a> From<&PolicyOverrideReason<'a>> for owned::PolicyOverrideReason {
-    /// Build an owned copy of the referenced borrowed value.
     fn from(value: &PolicyOverrideReason<'a>) -> Self {
         From::from(*value)
     }
