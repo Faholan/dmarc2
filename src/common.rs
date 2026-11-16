@@ -61,15 +61,11 @@ where
 {
     let s: String = Deserialize::deserialize(deserializer)?;
 
-    #[expect(
-        clippy::unwrap_used,
-        reason = "The iterator returned by .split has at least one element"
-    )]
     s.trim_start_matches('"')
         .trim_end_matches('"')
         .split('.')
         .next()
-        .ok_or(de::Error::custom(format!("Invalid integer {s}")))?
+        .ok_or_else(|| de::Error::custom(format!("Invalid integer {s}")))?
         .parse()
         .map_err(de::Error::custom)
 }

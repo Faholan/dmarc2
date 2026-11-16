@@ -144,7 +144,7 @@
     clippy::volatile_composites,
     clippy::while_float,
     clippy::wildcard_dependencies,
-    rustdoc::unescaped_backticks,
+    rustdoc::unescaped_backticks
 )]
 
 pub mod borrowed;
