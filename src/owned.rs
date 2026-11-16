@@ -1,4 +1,47 @@
 //! Owned version of a DMARC aggregate report.
+//!
+//! The types in this module own all their data, using [`String`]
+//! instead of borrowed `&str`. They don't depend on the lifetime of the
+//! parsed input, so they can be stored, sent across threads or returned
+//! from functions freely.
+//!
+//! Owned reports are produced by [`parse_owned`](crate::parse_owned),
+//! [`parse_reader`](crate::parse_reader), [`str::parse`] or [`TryFrom<&str>`].
+//! A [`borrowed::Report`](crate::borrowed::Report) can also be converted
+//! into an owned [`Report`] with [`From`], and both variants can be compared
+//! with `==`.
+//!
+//! # Examples
+//!
+//! ```
+//! use dmarc2::owned::{Disposition, Report};
+//!
+//! # let xml = r#"<feedback>
+//! #   <report_metadata>
+//! #     <org_name>ACME corporation</org_name>
+//! #     <email>wile.e.coyote@acme.corp</email>
+//! #     <report_id>beepbeep</report_id>
+//! #     <date_range><begin>1609459200</begin><end>1609545600</end></date_range>
+//! #   </report_metadata>
+//! #   <policy_published><domain>road.runner</domain><p>none</p></policy_published>
+//! #   <record>
+//! #     <row>
+//! #       <source_ip>192.0.2.1</source_ip>
+//! #       <count>195</count>
+//! #       <policy_evaluated><disposition>none</disposition><dkim>pass</dkim><spf>pass</spf></policy_evaluated>
+//! #     </row>
+//! #     <identifiers><header_from>road.runner</header_from></identifiers>
+//! #     <auth_results><spf><domain>road.runner</domain><result>pass</result></spf></auth_results>
+//! #   </record>
+//! # </feedback>"#;
+//! let report: Report = xml.parse().expect("valid DMARC report");
+//!
+//! assert_eq!(report.policy_published.p, Disposition::None);
+//!
+//! // Total number of messages covered by the report.
+//! let total: u64 = report.records.iter().map(|r| r.row.count).sum();
+//! assert_eq!(total, 195);
+//! ```
 
 use core::net::IpAddr;
 
@@ -13,6 +56,40 @@ use crate::common::{deserialize_failure_reporting, deserialize_testing};
 /// DMARC aggregate feedback report.
 ///
 /// Defined as the root XML element in [RFC 9990 section 3.1.1.1](https://www.rfc-editor.org/info/rfc9990/#section-3.1.1.1) (`<feedback>`).
+///
+/// # Examples
+///
+/// ```
+/// use dmarc2::owned::Report;
+///
+/// # let xml = r#"<feedback>
+/// #   <report_metadata>
+/// #     <org_name>ACME corporation</org_name>
+/// #     <email>wile.e.coyote@acme.corp</email>
+/// #     <report_id>beepbeep</report_id>
+/// #     <date_range><begin>1609459200</begin><end>1609545600</end></date_range>
+/// #   </report_metadata>
+/// #   <policy_published><domain>road.runner</domain><p>none</p></policy_published>
+/// #   <record>
+/// #     <row>
+/// #       <source_ip>192.0.2.1</source_ip>
+/// #       <count>195</count>
+/// #       <policy_evaluated><disposition>none</disposition><dkim>pass</dkim><spf>pass</spf></policy_evaluated>
+/// #     </row>
+/// #     <identifiers><header_from>road.runner</header_from></identifiers>
+/// #     <auth_results><spf><domain>road.runner</domain><result>pass</result></spf></auth_results>
+/// #   </record>
+/// # </feedback>"#;
+/// // From a borrowed report.
+/// let borrowed = dmarc2::parse(xml)?;
+/// let owned = Report::from(&borrowed);
+/// assert_eq!(owned, borrowed);
+///
+/// // Or directly from the XML.
+/// let owned2 = Report::try_from(xml)?;
+/// assert_eq!(owned, owned2);
+/// # Ok::<(), dmarc2::DeError>(())
+/// ```
 #[derive(Debug, Clone, PartialEq, Eq, Deserialize)]
 #[serde(rename = "feedback")]
 pub struct Report {
@@ -181,8 +258,10 @@ pub struct DKIMAuthResult {
     pub domain: String,
 
     /// Selector used during validation ("s=" tag of the signature).
+    ///
+    /// Some DMARC implementations forego the selector even though it is
+    /// required by the RFC: it is then left empty.
     #[serde(default)]
-    // Some DMARC implementations forego the selector even though it is required by the RFC.
     pub selector: String,
 
     /// Result of the DKIM verification.
@@ -198,8 +277,10 @@ pub struct DKIMAuthResult {
 #[derive(Debug, Clone, PartialEq, Eq, Deserialize)]
 pub struct SPFAuthResult {
     /// Domain used during validation.
+    ///
+    /// Some DMARC implementations forego the domain even though it is
+    /// required by the RFC: it is then left empty.
     #[serde(default)]
-    // Some DMARC implementations forego the domain even though it is required by the RFC.
     pub domain: String,
 
     /// Source of the domain used during validation.

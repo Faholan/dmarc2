@@ -1,3 +1,4 @@
+//! Unit tests parsing sample DMARC aggregate reports.
 #![allow(
     clippy::panic_in_result_fn,
     clippy::unwrap_used,
@@ -105,6 +106,9 @@ fn minimal_xml() -> Result<(), DeError> {
 }
 
 /// Simply check that parsing doesn't fail.
+///
+/// Also checks that the borrowed, owned and converted
+/// variants of the report are equal.
 fn minimum_example(s: &str) -> Result<(), DeError> {
     let report = parse(s)?;
     let report_owned = parse_owned(s)?;
