@@ -59,7 +59,7 @@ fn deserialize_int<'de, D>(deserializer: D) -> Result<i64, D::Error>
 where
     D: de::Deserializer<'de>,
 {
-    let s: &str = Deserialize::deserialize(deserializer)?;
+    let s: String = Deserialize::deserialize(deserializer)?;
 
     #[expect(
         clippy::unwrap_used,
@@ -69,7 +69,7 @@ where
         .trim_end_matches('"')
         .split('.')
         .next()
-        .unwrap()
+        .ok_or(de::Error::custom(format!("Invalid integer {s}")))?
         .parse()
         .map_err(de::Error::custom)
 }

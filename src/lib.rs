@@ -143,7 +143,8 @@
     clippy::verbose_file_reads,
     clippy::volatile_composites,
     clippy::while_float,
-    clippy::wildcard_dependencies
+    clippy::wildcard_dependencies,
+    rustdoc::unescaped_backticks,
 )]
 
 pub mod borrowed;
@@ -174,24 +175,24 @@ pub use de::DeError;
 /// # Examples
 ///
 /// ```
-/// # let xml = r#"<feedback>
-/// #   <report_metadata>
-/// #     <org_name>ACME corporation</org_name>
-/// #     <email>wile.e.coyote@acme.corp</email>
-/// #     <report_id>beepbeep</report_id>
-/// #     <date_range><begin>1609459200</begin><end>1609545600</end></date_range>
-/// #   </report_metadata>
-/// #   <policy_published><domain>road.runner</domain><p>none</p></policy_published>
-/// #   <record>
-/// #     <row>
-/// #       <source_ip>192.0.2.1</source_ip>
-/// #       <count>195</count>
-/// #       <policy_evaluated><disposition>none</disposition><dkim>pass</dkim><spf>pass</spf></policy_evaluated>
-/// #     </row>
-/// #     <identifiers><header_from>road.runner</header_from></identifiers>
-/// #     <auth_results><spf><domain>road.runner</domain><result>pass</result></spf></auth_results>
-/// #   </record>
-/// # </feedback>"#;
+/// let xml = r#"<feedback>
+///   <report_metadata>
+///     <org_name>ACME corporation</org_name>
+///     <email>wile.e.coyote@acme.corp</email>
+///     <report_id>beepbeep</report_id>
+///     <date_range><begin>1609459200</begin><end>1609545600</end></date_range>
+///   </report_metadata>
+///   <policy_published><domain>road.runner</domain><p>none</p></policy_published>
+///   <record>
+///     <row>
+///       <source_ip>192.0.2.1</source_ip>
+///       <count>195</count>
+///       <policy_evaluated><disposition>none</disposition><dkim>pass</dkim><spf>pass</spf></policy_evaluated>
+///     </row>
+///     <identifiers><header_from>road.runner</header_from></identifiers>
+///     <auth_results><spf><domain>road.runner</domain><result>pass</result></spf></auth_results>
+///   </record>
+/// </feedback>"#;
 /// let report = dmarc2::parse(xml).expect("valid DMARC report");
 ///
 /// assert_eq!(report.report_metadata.org_name, "ACME corporation");
@@ -230,24 +231,24 @@ impl<'a> TryFrom<&'a str> for borrowed::Report<'a> {
 /// # Examples
 ///
 /// ```
-/// # let xml = r#"<feedback>
-/// #   <report_metadata>
-/// #     <org_name>ACME corporation</org_name>
-/// #     <email>wile.e.coyote@acme.corp</email>
-/// #     <report_id>beepbeep</report_id>
-/// #     <date_range><begin>1609459200</begin><end>1609545600</end></date_range>
-/// #   </report_metadata>
-/// #   <policy_published><domain>road.runner</domain><p>none</p></policy_published>
-/// #   <record>
-/// #     <row>
-/// #       <source_ip>192.0.2.1</source_ip>
-/// #       <count>195</count>
-/// #       <policy_evaluated><disposition>none</disposition><dkim>pass</dkim><spf>pass</spf></policy_evaluated>
-/// #     </row>
-/// #     <identifiers><header_from>road.runner</header_from></identifiers>
-/// #     <auth_results><spf><domain>road.runner</domain><result>pass</result></spf></auth_results>
-/// #   </record>
-/// # </feedback>"#;
+/// let xml = r#"<feedback>
+///   <report_metadata>
+///     <org_name>ACME corporation</org_name>
+///     <email>wile.e.coyote@acme.corp</email>
+///     <report_id>beepbeep</report_id>
+///     <date_range><begin>1609459200</begin><end>1609545600</end></date_range>
+///   </report_metadata>
+///   <policy_published><domain>road.runner</domain><p>none</p></policy_published>
+///   <record>
+///     <row>
+///       <source_ip>192.0.2.1</source_ip>
+///       <count>195</count>
+///       <policy_evaluated><disposition>none</disposition><dkim>pass</dkim><spf>pass</spf></policy_evaluated>
+///     </row>
+///     <identifiers><header_from>road.runner</header_from></identifiers>
+///     <auth_results><spf><domain>road.runner</domain><result>pass</result></spf></auth_results>
+///   </record>
+/// </feedback>"#;
 /// // The report doesn't borrow from its input, which can be dropped.
 /// let report: dmarc2::owned::Report =
 ///     dmarc2::parse_owned(xml).expect("valid DMARC report");
@@ -295,6 +296,7 @@ impl TryFrom<&str> for owned::Report {
 ///
 /// # Examples
 ///
+/// ```
 /// use std::io::BufReader;
 ///
 /// let xml = r#"<feedback>
@@ -305,6 +307,15 @@ impl TryFrom<&str> for owned::Report {
 ///     <date_range><begin>1609459200</begin><end>1609545600</end></date_range>
 ///   </report_metadata>
 ///   <policy_published><domain>road.runner</domain><p>none</p></policy_published>
+///    <record>
+///      <row>
+///        <source_ip>192.0.2.1</source_ip>
+///        <count>195</count>
+///        <policy_evaluated><disposition>none</disposition><dkim>pass</dkim><spf>pass</spf></policy_evaluated>
+///      </row>
+///      <identifiers><header_from>road.runner</header_from></identifiers>
+///      <auth_results><spf><domain>road.runner</domain><result>pass</result></spf></auth_results>
+///    </record>
 /// </feedback>"#;
 /// let report = dmarc2::parse_reader(BufReader::new(xml.as_bytes()))
 ///     .expect("valid DMARC report");
